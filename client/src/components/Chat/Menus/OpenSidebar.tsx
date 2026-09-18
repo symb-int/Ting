@@ -1,6 +1,8 @@
-import { TooltipAnchor, Button, Sidebar } from '@librechat/client';
+import { Menu } from 'lucide-react';
+import { TooltipAnchor } from '@librechat/client';
 import { useShortcutAriaKey, useShortcutHint } from '~/hooks/useKeyboardShortcuts';
 import useSidebarToggle from '~/hooks/Nav/useSidebarToggle';
+import { TingIconButton } from '~/ting';
 import { useLocalize } from '~/hooks';
 
 export const CLOSE_SIDEBAR_ID = 'close-sidebar-button';
@@ -40,20 +42,18 @@ export default function OpenSidebar({
     <TooltipAnchor
       description={tooltipDescription}
       render={
-        <Button
+        <TingIconButton
           id={OPEN_SIDEBAR_ID}
-          size="icon"
-          variant="header-action"
           data-testid={testId}
-          aria-label={localize('com_nav_open_sidebar')}
+          label={localize('com_nav_open_sidebar')}
           aria-expanded={false}
           aria-controls="chat-history-nav"
           aria-keyshortcuts={ariaKey}
           className={className}
           onClick={handleClick}
         >
-          <Sidebar className="icon-md" aria-hidden="true" />
-        </Button>
+          <Menu strokeWidth={1.65} aria-hidden="true" />
+        </TingIconButton>
       }
     />
   );

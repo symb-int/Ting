@@ -1,7 +1,6 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { TUser } from 'librechat-data-provider';
 import { Skeleton } from './Skeleton';
-import { useAvatar } from '~/hooks';
 import { UserIcon } from '~/svgs';
 
 export interface AvatarProps {
@@ -19,57 +18,26 @@ const Avatar: React.FC<AvatarProps> = ({
   alt,
   showDefaultWhenEmpty = true,
 }) => {
-  const avatarSrc = useAvatar(user);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
-
-  const avatarSeed = useMemo(
-    () => user?.avatar || user?.username || user?.email || '',
-    [user?.avatar, user?.username, user?.email],
-  );
+  const [loadedSrc, setLoadedSrc] = useState<string>();
+  const [failedSrc, setFailedSrc] = useState<string>();
+  const imageSrc = user?.avatar || '';
+  const imageLoaded = loadedSrc === imageSrc;
+  const imageError = failedSrc === imageSrc;
+  const initials = useMemo(() => {
+    const name = user?.name?.trim();
+    if (!name) return '';
+    const parts = name.split(/\s+/);
+    const first = Array.from(parts[0])[0];
+    const last = parts.length > 1 ? Array.from(parts[parts.length - 1])[0] : '';
+    return first + last;
+  }, [user?.name]);
 
   const altText = useMemo(
     () => alt || `${user?.name || user?.username || user?.email || ''}'s avatar`,
     [alt, user?.name, user?.username, user?.email],
   );
 
-  const imageSrc = useMemo(() => {
-    if (!avatarSeed || imageError) return '';
-    return (user?.avatar ?? '') || avatarSrc || '';
-  }, [user?.avatar, avatarSrc, avatarSeed, imageError]);
-
-  const handleImageLoad = useCallback(() => {
-    setImageLoaded(true);
-  }, []);
-
-  const handleImageError = useCallback(() => {
-    setImageError(true);
-    setImageLoaded(false);
-  }, []);
-
-  const DefaultAvatar = useCallback(
-    () => (
-      <div
-        style={{
-          backgroundColor: 'rgb(121, 137, 255)',
-          width: `${size}px`,
-          height: `${size}px`,
-          boxShadow: 'rgba(240, 246, 252, 0.1) 0px 0px 0px 1px',
-        }}
-        className={`relative flex items-center justify-center rounded-full p-1 text-text-primary ${className}`}
-        aria-hidden="true"
-      >
-        <UserIcon />
-      </div>
-    ),
-    [size, className],
-  );
-
-  if (avatarSeed.length === 0 && showDefaultWhenEmpty) {
-    return <DefaultAvatar />;
-  }
-
-  if (avatarSeed.length > 0 && !imageError) {
+  if (imageSrc && !imageError) {
     return (
       <div className="relative" style={{ width: `${size}px`, height: `${size}px` }}>
         {!imageLoaded && (
@@ -77,6 +45,7 @@ const Avatar: React.FC<AvatarProps> = ({
         )}
 
         <img
+          key={imageSrc}
           style={{
             width: `${size}px`,
             height: `${size}px`,
@@ -85,15 +54,23 @@ const Avatar: React.FC<AvatarProps> = ({
           className={`rounded-full ${className}`}
           src={imageSrc}
           alt={altText}
-          onLoad={handleImageLoad}
-          onError={handleImageError}
+          onLoad={() => setLoadedSrc(imageSrc)}
+          onError={() => setFailedSrc(imageSrc)}
         />
       </div>
     );
   }
 
-  if (imageError && showDefaultWhenEmpty) {
-    return <DefaultAvatar />;
+  if (showDefaultWhenEmpty || (!imageSrc && initials)) {
+    return (
+      <div
+        style={{ width: `${size}px`, height: `${size}px` }}
+        className={`relative inline-flex flex-none items-center justify-center rounded-full border border-border-medium bg-surface-secondary text-sm font-bold leading-[1.45] text-text-primary ${className}`}
+        aria-hidden="true"
+      >
+        {initials || <UserIcon />}
+      </div>
+    );
   }
 
   return null;
