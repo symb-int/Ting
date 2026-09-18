@@ -1,0 +1,717 @@
+.ting-sidebar {
+  display: flex;
+  width: 214px;
+  min-width: 214px;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--ting-color-border);
+  background: var(--ting-color-surface-secondary);
+  color: var(--ting-color-text);
+}
+
+.ting-sidebar__brand-row {
+  display: flex;
+  min-height: 66px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 16px 16px;
+}
+
+.ting-sidebar__wordmark {
+  color: var(--ting-color-text);
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.ting-sidebar__close {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: var(--ting-radius-control);
+}
+
+.ting-sidebar__close:hover {
+  background: rgb(var(--ting-rgb-surface) / 0.5);
+}
+
+.ting-sidebar__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ting-sidebar__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.ting-sidebar__new-case {
+  justify-content: center;
+  text-decoration: none;
+}
+
+.ting-sidebar__new-case svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ting-sidebar-search {
+  height: 36px;
+  border: 1px solid var(--ting-color-border);
+  border-radius: var(--ting-radius-control);
+  background: var(--ting-color-surface);
+  padding: 6px 12px;
+}
+
+.ting-sidebar-search:focus-within {
+  border-color: var(--ting-color-action);
+  box-shadow: var(--ting-shadow-composer-focus);
+}
+
+.ting-sidebar-search > svg {
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  color: var(--ting-color-text-secondary);
+}
+
+.ting-sidebar-search input {
+  padding-left: 28px;
+  color: var(--ting-color-text);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ting-sidebar-search input::placeholder {
+  color: var(--ting-color-placeholder);
+}
+
+.ting-sidebar__history {
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  padding: 0 8px 16px;
+}
+
+.ting-sidebar__history-scroll {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.ting-sidebar__history-content {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+}
+
+.ting-conversations__heading {
+  flex: none;
+  padding: 12px 12px 6px;
+  color: var(--ting-color-text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.ting-conversation-list-row {
+  padding: 0;
+}
+
+.ting-conversations .ting-convo-row {
+  min-height: 40px;
+  margin: 2px 0;
+  padding-left: 3px;
+  border-radius: 0 var(--ting-radius-control) var(--ting-radius-control) 0;
+}
+
+.ting-conversations .ting-convo-row:hover,
+.ting-conversations .ting-convo-row:focus-within {
+  background: var(--ting-color-surface);
+}
+
+.ting-conversations .ting-convo-row:hover::before,
+.ting-conversations .ting-convo-row:focus-within::before {
+  width: 3px;
+  background: var(--ting-color-navigation-marker);
+}
+
+.ting-conversations .ting-convo-row:has([aria-current='page']) {
+  background: var(--ting-color-surface);
+}
+
+.ting-conversations .ting-convo-row::before {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  border-radius: 0;
+  background: var(--ting-color-action);
+}
+
+.ting-conversations .ting-convo-row:has([aria-current='page'])::before {
+  width: 3px;
+  background: var(--ting-color-action);
+}
+
+.ting-conversations .ting-convo-row > button {
+  height: 100%;
+  min-height: 40px;
+  gap: 0;
+  border-radius: inherit;
+  padding: 8px;
+  background: transparent;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.ting-conversations .ting-convo-row > button > :first-child:not(span) {
+  display: none;
+}
+
+.ting-conversations .ting-convo-row:has([aria-current='page']) > button {
+  color: var(--ting-color-action);
+  font-weight: 700;
+}
+
+.ting-conversations [data-testid='convo-unpin-button'] {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.ting-conversations [data-testid='convo-list-error'] {
+  padding: 24px 12px;
+}
+
+.ting-sidebar__account {
+  flex: none;
+  padding: 0;
+}
+
+.ting-sidebar__account-skeleton {
+  height: 44px;
+}
+
+.ting-account-row {
+  min-height: 68px;
+  padding: 16px 12px;
+}
+
+.ting-account-row:hover,
+.ting-account-row[aria-expanded='true'] {
+  background: rgb(var(--ting-rgb-surface) / 0.5);
+}
+
+.ting-account-row__copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  text-align: left;
+}
+
+.ting-account-row__name {
+  overflow: hidden;
+  color: var(--ting-color-text);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ting-account-row__label {
+  color: var(--ting-color-text-secondary);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.ting-account-row__gear {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--ting-color-text-secondary);
+}
+
+.ting-menu {
+  border: 1px solid var(--ting-color-border);
+  border-radius: var(--ting-radius-control);
+  background: var(--ting-color-surface);
+  padding: 4px;
+}
+
+.ting-menu.popover-ui:focus-visible,
+.ting-menu.popover-ui[data-focus-visible] {
+  outline: 2px solid var(--ting-color-action);
+  outline-offset: 3px;
+}
+
+.ting-menu__item {
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: var(--ting-radius-control);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.ting-chat-main {
+  min-width: 0;
+  background: var(--ting-color-surface);
+  color: var(--ting-color-text);
+}
+
+.ting-chat-header {
+  display: flex;
+  min-height: 72px;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: var(--ting-color-surface);
+}
+
+.ting-chat-header__menu {
+  display: none;
+  flex: none;
+}
+
+.ting-chat-header__copy {
+  min-width: 0;
+}
+
+.ting-chat-header__title {
+  overflow: hidden;
+  color: var(--ting-color-text);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.35px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ting-chat-header__subtitle {
+  margin-top: 2px;
+  color: var(--ting-color-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ting-chat-body {
+  min-height: 0;
+  flex: 1;
+}
+
+.ting-chat-body--landing {
+  gap: 24px;
+  justify-content: center;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 48px;
+}
+
+.ting-chat-body--conversation {
+  overflow: hidden;
+}
+
+.ting-welcome {
+  width: 100%;
+  max-width: 450px;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.ting-welcome__title {
+  color: var(--ting-color-text);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.ting-welcome__description {
+  margin-top: 12px;
+  color: var(--ting-color-text-secondary);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.ting-composer-dock {
+  flex: none;
+  padding: 0 32px 16px;
+}
+
+.ting-composer-dock--landing {
+  max-width: 740px;
+}
+
+.ting-chat-form,
+.ting-message-column {
+  max-width: 760px;
+}
+
+.ting-composer {
+  border: 1px solid var(--ting-color-composer-border);
+  border-radius: var(--ting-radius-composer);
+  background: var(--ting-color-surface);
+  box-shadow: var(--ting-shadow-composer);
+}
+
+.ting-composer:focus-within {
+  border-color: var(--ting-color-action);
+  box-shadow: var(--ting-shadow-composer-focus);
+}
+
+.ting-composer-textarea {
+  display: block;
+  min-height: 49px;
+  max-height: 40dvh;
+  padding: 12px 16px 8px;
+  border: 0;
+  color: var(--ting-color-text);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.ting-composer-input-row > :last-child {
+  display: none;
+}
+
+.ting-composer-actions {
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 8px 8px;
+}
+
+.ting-composer-actions > :not(:last-child) {
+  display: none;
+}
+
+.ting-composer-actions > :last-child {
+  margin-left: auto;
+}
+
+.ting-composer-actions .ting-composer-submit {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  border-radius: 8px;
+}
+
+.ting-composer-status {
+  margin-bottom: 8px;
+}
+
+.ting-message-capability-status {
+  margin-top: 8px;
+}
+
+.ting-messages {
+  padding: 24px 32px;
+}
+
+.ting-message-shell {
+  width: 100%;
+  padding: 0;
+}
+
+#screenshot-target > div + div .ting-message-shell {
+  margin-top: 24px;
+}
+
+.ting-message-row {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.ting-message-row .markdown.message-content {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.ting-message-row .user-turn {
+  max-width: 85%;
+}
+
+.ting-message-row .user-turn [data-testid='message-body'] {
+  padding: 8px 12px;
+  border-radius: 12px 12px 4px 12px;
+  background: var(--ting-color-surface-secondary);
+}
+
+.ting-message-row .agent-turn {
+  width: fit-content;
+  max-width: 92%;
+  flex: 0 1 auto;
+}
+
+.ting-message-row .agent-turn.w-full {
+  width: 100%;
+  max-width: 100%;
+  flex: 1 1 0%;
+}
+
+.ting-message-row .agent-turn [data-testid='message-body'] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--ting-color-border-agent);
+  border-radius: 4px 12px 12px 12px;
+  background: var(--ting-color-surface-highlight);
+}
+
+.ting-message-row [data-testid='message-body'] p + p {
+  margin-top: 6px;
+}
+
+.ting-agent-header {
+  min-height: 22px;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.ting-agent-mark {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--ting-radius-control);
+  background: var(--ting-color-action);
+  color: var(--ting-color-surface);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ting-message-row .hover-button {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 6px;
+  border-radius: var(--ting-radius-control);
+  color: var(--ting-color-text-secondary);
+}
+
+.ting-message-row .hover-button:hover {
+  background: var(--ting-color-surface-secondary);
+  color: var(--ting-color-text);
+}
+
+.ting-message-row .hover-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+#mobile-drawer-scrim {
+  background: rgb(var(--ting-rgb-text) / 0.4);
+}
+
+.ting-dialog-backdrop {
+  background: rgb(var(--ting-rgb-text) / 0.4);
+  opacity: 1;
+}
+
+.dialog.dialog {
+  width: min(620px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  overflow: hidden;
+  gap: 0;
+  border: 1px solid var(--ting-color-border);
+  border-radius: 4px;
+  background: var(--ting-color-surface);
+  color: var(--ting-color-text);
+  padding: 0;
+  box-shadow: 0 16px 70px #11131426;
+}
+
+.dialog .dialog__head,
+.dialog .dialog__foot {
+  padding: 16px 24px;
+}
+
+.dialog .dialog__body {
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.dialog .dialog__head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.dialog .dialog__head h2,
+.dialog .dialog__head h3 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: normal;
+  line-height: 1.3;
+}
+
+.dialog .dialog__body,
+.dialog .dialog__foot {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.dialog .dialog__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@media (min-width: 1440px) {
+  .ting-chat-form,
+  .ting-message-column {
+    max-width: 800px;
+  }
+}
+
+@media (min-width: 800px) and (max-width: 1150px) {
+  .ting-sidebar {
+    width: 195px;
+    min-width: 195px;
+  }
+}
+
+@media (max-width: 799px) {
+  .ting-sidebar--drawer {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(280px, 100vw);
+    min-width: min(280px, 100vw);
+    transform: translateX(-100%);
+    box-shadow: var(--ting-shadow-drawer);
+  }
+
+  .ting-sidebar--drawer.ting-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .ting-sidebar-search input {
+    font-size: 16px;
+  }
+
+  .ting-chat-header {
+    min-height: 64px;
+    gap: 6px;
+    padding: 8px 12px 8px 8px;
+  }
+
+  .ting-chat-header__menu {
+    display: flex;
+  }
+
+  .ting-chat-header__title {
+    font-size: 15px;
+  }
+
+  .ting-chat-header__subtitle {
+    font-size: 12px;
+  }
+
+  .ting-chat-body--landing {
+    padding-bottom: 32px;
+  }
+
+  .ting-welcome__title {
+    font-size: 24px;
+  }
+
+  .ting-composer-dock {
+    padding: 0 12px 12px;
+  }
+
+  .ting-chat-form,
+  .ting-message-column {
+    max-width: none;
+  }
+
+  .ting-composer-textarea {
+    font-size: 16px;
+  }
+
+  .ting-message-shell {
+    padding: 0;
+  }
+
+  .ting-messages {
+    padding: 16px;
+  }
+
+  .ting-message-row .user-turn,
+  .ting-message-row .agent-turn {
+    max-width: 96%;
+  }
+
+  .dialog .dialog__head,
+  .dialog .dialog__body,
+  .dialog .dialog__foot {
+    padding: 16px;
+  }
+
+  .dialog .dialog__foot {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 479px) {
+  .ting-message-row .agent-turn {
+    max-width: 100%;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .ting-composer-actions .ting-composer-submit {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
+  }
+
+  .ting-message-row .hover-button {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ting-sidebar--drawer {
+    transition: none !important;
+  }
+
+  .ting-settings-dialog-transition {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .ting-settings-dialog-transition--backdrop {
+    opacity: 1 !important;
+  }
+
+  .ting-settings-dialog-transition--panel {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

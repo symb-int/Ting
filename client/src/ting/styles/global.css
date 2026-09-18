@@ -1,0 +1,92 @@
+@font-face {
+  font-display: swap;
+  font-family: BundesSansWeb;
+  font-style: normal;
+  font-weight: 400;
+  src: url('$fonts/BundesSansWeb-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: BundesSansWeb;
+  font-style: normal;
+  font-weight: 700;
+  src: url('$fonts/BundesSansWeb-Bold.woff2') format('woff2');
+}
+
+:root:root {
+  font-size: 16px;
+  font-synthesis: none;
+  line-height: 1.45;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:where(html, body, button, input, textarea, select) {
+  font-family: var(--ting-font-family);
+}
+
+:where(html, body, #root) {
+  background: var(--ting-color-surface);
+  color: var(--ting-color-text);
+}
+
+:where(html, body) {
+  overflow-x: hidden;
+}
+
+html:root .ting-control:focus-visible,
+html:root .ting-link:focus-visible {
+  outline: 2px solid var(--ting-color-action);
+  outline-offset: 3px;
+}
+
+html:root .ting-input.lc-field:focus,
+html:root .ting-input.lc-field:focus-visible {
+  border-color: var(--ting-color-action);
+  box-shadow: none;
+  outline: 2px solid var(--ting-color-action);
+  outline-offset: 3px;
+}
+
+:where(.ting-control):disabled,
+:where(.ting-control[aria-disabled='true']) {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .ting-button--compact,
+  .ting-icon-button,
+  .ting-secret-button {
+    min-height: 36px;
+  }
+
+  .ting-icon-button,
+  .ting-secret-button {
+    min-width: 36px;
+  }
+}
+
+@media (max-width: 799px) {
+  .ting-input {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.ting-control, .ting-link) {
+    scroll-behavior: auto;
+    transition-duration: 0ms;
+  }
+}
+
+@media (forced-colors: active) {
+  :where(.ting-control, .ting-input, .ting-status, .ting-empty-state) {
+    forced-color-adjust: auto;
+  }
+}

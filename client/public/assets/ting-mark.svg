@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="TING">
+  <rect width="512" height="512" fill="#0071ad" />
+  <path
+    fill="#ffffff"
+    transform="translate(116.35 421) scale(.47826 -.47826)"
+    d="M556 580H356V0H222V580H20V690H564Z"
+  />
+</svg>

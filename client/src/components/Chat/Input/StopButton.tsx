@@ -1,0 +1,42 @@
+import { memo } from 'react';
+import { composerSubmitClasses, TooltipAnchor } from '@librechat/client';
+import { useLocalize } from '~/hooks';
+
+export default memo(function StopButton({
+  stop,
+  setShowStopButton,
+}: {
+  stop: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  setShowStopButton: (value: boolean) => void;
+}) {
+  const localize = useLocalize();
+
+  return (
+    <TooltipAnchor
+      description={localize('com_ting_stop')}
+      render={
+        <button
+          type="button"
+          data-testid="stop-generation-button"
+          className={`${composerSubmitClasses()} ting-composer-submit`}
+          aria-label={localize('com_ting_stop')}
+          onClick={(e) => {
+            setShowStopButton(false);
+            stop(e);
+          }}
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="icon-lg text-text-on-status"
+          >
+            <rect x="7" y="7" width="10" height="10" rx="1.25" fill="currentColor"></rect>
+          </svg>
+        </button>
+      }
+    ></TooltipAnchor>
+  );
+});

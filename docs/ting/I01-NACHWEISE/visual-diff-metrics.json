@@ -1,0 +1,106 @@
+[
+  {
+    "view": "new",
+    "size": "1440x900",
+    "width": 1440,
+    "height": 900,
+    "meanAbsoluteChannelDifference": 2.1616,
+    "changedPixelRatioAt16": 0.018904
+  },
+  {
+    "view": "new",
+    "size": "1024x768",
+    "width": 1024,
+    "height": 768,
+    "meanAbsoluteChannelDifference": 3.5415,
+    "changedPixelRatioAt16": 0.030843
+  },
+  {
+    "view": "new",
+    "size": "390x844",
+    "width": 390,
+    "height": 844,
+    "meanAbsoluteChannelDifference": 6.4458,
+    "changedPixelRatioAt16": 0.06869
+  },
+  {
+    "view": "new",
+    "size": "799x844",
+    "width": 799,
+    "height": 844,
+    "meanAbsoluteChannelDifference": 3.3467,
+    "changedPixelRatioAt16": 0.035858
+  },
+  {
+    "view": "new",
+    "size": "800x844",
+    "width": 800,
+    "height": 844,
+    "meanAbsoluteChannelDifference": 4.0458,
+    "changedPixelRatioAt16": 0.034914
+  },
+  {
+    "view": "new",
+    "size": "1150x900",
+    "width": 1150,
+    "height": 900,
+    "meanAbsoluteChannelDifference": 2.6808,
+    "changedPixelRatioAt16": 0.023422
+  },
+  {
+    "view": "new",
+    "size": "1151x900",
+    "width": 1151,
+    "height": 900,
+    "meanAbsoluteChannelDifference": 2.7044,
+    "changedPixelRatioAt16": 0.023629
+  },
+  {
+    "view": "login",
+    "size": "1440x900",
+    "width": 1440,
+    "height": 900,
+    "meanAbsoluteChannelDifference": 0.7071,
+    "changedPixelRatioAt16": 0.02115
+  },
+  {
+    "view": "login",
+    "size": "1024x768",
+    "width": 1024,
+    "height": 768,
+    "meanAbsoluteChannelDifference": 1.1652,
+    "changedPixelRatioAt16": 0.034855
+  },
+  {
+    "view": "login",
+    "size": "390x844",
+    "width": 390,
+    "height": 844,
+    "meanAbsoluteChannelDifference": 2.8217,
+    "changedPixelRatioAt16": 0.081143
+  },
+  {
+    "view": "conversation",
+    "size": "1440x900",
+    "width": 1440,
+    "height": 900,
+    "meanAbsoluteChannelDifference": 11.3083,
+    "changedPixelRatioAt16": 0.291316
+  },
+  {
+    "view": "conversation",
+    "size": "1024x768",
+    "width": 1024,
+    "height": 768,
+    "meanAbsoluteChannelDifference": 15.2245,
+    "changedPixelRatioAt16": 0.361607
+  },
+  {
+    "view": "conversation",
+    "size": "390x844",
+    "width": 390,
+    "height": 844,
+    "meanAbsoluteChannelDifference": 27.0402,
+    "changedPixelRatioAt16": 0.508291
+  }
+]

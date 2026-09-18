@@ -1,0 +1,89 @@
+name: ting
+
+services:
+  api:
+    image: ting-api:increment-01
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: api-build
+    init: true
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      NODE_ENV: production
+      LIBRECHAT_TEMP_CREDENTIALS_PATH: /app/data/.env.temp
+    command:
+      - sh
+      - -c
+      - node /app/scripts/ting/runtime-config.mjs && exec node server/index.js
+    ports:
+      - '127.0.0.1:3080:3080'
+    volumes:
+      - type: volume
+        source: app-data
+        target: /app/data
+      - type: volume
+        source: profile-images
+        target: /app/client/public/images
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', '--silent', '--show-error', 'http://localhost:3080/health']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - local
+
+  mongodb:
+    image: mongo:8.0.20
+    restart: unless-stopped
+    command: ['mongod', '--noauth', '--bind_ip_all']
+    volumes:
+      - type: volume
+        source: mongodb-data
+        target: /data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'quit(db.adminCommand({ ping: 1 }).ok ? 0 : 2)']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - local
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.35.1
+    restart: unless-stopped
+    environment:
+      MEILI_ENV: production
+      MEILI_NO_ANALYTICS: 'true'
+      MEILI_MASTER_KEY: '${MEILI_MASTER_KEY:?Zuerst node scripts/ting/setup.mjs ausfuehren}'
+    volumes:
+      - type: volume
+        source: meilisearch-data
+        target: /meili_data
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', '--silent', '--show-error', 'http://localhost:7700/health']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - local
+
+volumes:
+  app-data:
+  profile-images:
+  mongodb-data:
+  meilisearch-data:
+
+networks:
+  local:
+    driver: bridge

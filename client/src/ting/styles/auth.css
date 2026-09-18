@@ -1,0 +1,85 @@
+.ting-auth-page {
+  display: flex;
+  min-height: 100dvh;
+  width: 100%;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--ting-color-surface);
+}
+
+.ting-auth-main {
+  width: 100%;
+  flex: 1 0 auto;
+}
+
+.ting-auth-frame {
+  width: 100%;
+  max-width: 400px;
+  margin-inline: auto;
+  padding: var(--ting-space-10) var(--ting-space-7) var(--ting-space-8);
+}
+
+.ting-auth-brand {
+  margin-bottom: var(--ting-space-7);
+  text-align: center;
+}
+
+.ting-auth-wordmark {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1.45;
+}
+
+.ting-auth-tagline {
+  margin-top: var(--ting-space-3);
+  color: var(--ting-color-text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.ting-auth-form {
+  display: grid;
+  gap: var(--ting-space-6);
+}
+
+.ting-auth-status {
+  margin-bottom: var(--ting-space-6);
+}
+
+.ting-auth-switch {
+  margin-top: var(--ting-space-6);
+  color: var(--ting-color-text-secondary);
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.ting-auth-link {
+  color: var(--ting-color-action);
+  text-decoration: none;
+}
+
+.ting-auth-link:hover {
+  color: var(--ting-color-action-hover);
+}
+
+.ting-auth-social {
+  display: grid;
+  gap: var(--ting-space-4);
+  margin-top: var(--ting-space-7);
+}
+
+.ting-auth-footer {
+  display: flex;
+  justify-content: center;
+  gap: var(--ting-space-5);
+  padding: 0 var(--ting-space-7) var(--ting-space-8);
+}
+
+@media (max-width: 799px) {
+  .ting-auth-frame {
+    padding: var(--ting-space-9) var(--ting-space-7) var(--ting-space-8);
+  }
+}

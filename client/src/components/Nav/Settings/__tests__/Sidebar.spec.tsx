@@ -1,0 +1,83 @@
+import * as Tabs from '@radix-ui/react-tabs';
+import userEvent from '@testing-library/user-event';
+import { SettingsTabValues } from 'librechat-data-provider';
+import type { SettingsContextValue } from '../types';
+import { render, screen } from 'test/layout-test-utils';
+import Sidebar from '../Sidebar';
+
+const ctx: SettingsContextValue = {
+  balanceEnabled: false,
+  hasAnyPersonalizationFeature: false,
+  hasMemoryOptOut: false,
+  hasStatefulCodeSessions: false,
+  hasRemoteAgents: false,
+  hasUserProvidedEndpoints: false,
+  hasMultiConvo: false,
+  hasPrompts: false,
+  isLocalProvider: true,
+  twoFactorEnabled: false,
+  allowAccountDeletion: true,
+  aboutEnabled: false,
+  engineTTS: 'browser',
+  langfuseConnectionAccess: false,
+  adminPanelURL: '',
+};
+
+function setup(extra: Partial<SettingsContextValue> = {}, query = '') {
+  const onQueryChange = jest.fn();
+  render(
+    <Tabs.Root value={SettingsTabValues.ACCOUNT}>
+      <Sidebar
+        ctx={{ ...ctx, ...extra }}
+        query={query}
+        onQueryChange={onQueryChange}
+        onSelectTab={jest.fn()}
+      />
+    </Tabs.Root>,
+  );
+  return { onQueryChange };
+}
+
+describe('Sidebar', () => {
+  it('shows exactly the account and chat tabs', () => {
+    setup();
+    expect(screen.getByText('Account')).toBeInTheDocument();
+    expect(screen.getByText('Chat')).toBeInTheDocument();
+    expect(screen.queryByText('General')).not.toBeInTheDocument();
+    expect(screen.queryByText('About')).not.toBeInTheDocument();
+    expect(screen.queryByText('Langfuse')).not.toBeInTheDocument();
+  });
+
+  it('forwards typing to onQueryChange', async () => {
+    const { onQueryChange } = setup();
+    await userEvent.type(screen.getByRole('textbox'), 'theme');
+    expect(onQueryChange).toHaveBeenCalled();
+  });
+
+  it('Escape clears search when query is non-empty', async () => {
+    const { onQueryChange } = setup({}, 'theme');
+    const input = screen.getByRole('textbox');
+    input.focus();
+    await userEvent.keyboard('{Escape}');
+    expect(onQueryChange).toHaveBeenCalledWith('');
+  });
+
+  it('Escape does not call onQueryChange when query is empty', async () => {
+    const { onQueryChange } = setup({}, '');
+    const input = screen.getByRole('textbox');
+    input.focus();
+    await userEvent.keyboard('{Escape}');
+    expect(onQueryChange).not.toHaveBeenCalled();
+  });
+
+  it('shows a clear button that clears the query when there is text', async () => {
+    const { onQueryChange } = setup({}, 'theme');
+    await userEvent.click(screen.getByRole('button', { name: /clear search/i }));
+    expect(onQueryChange).toHaveBeenCalledWith('');
+  });
+
+  it('hides the clear button when the query is empty', () => {
+    setup({}, '');
+    expect(screen.queryByRole('button', { name: /clear search/i })).not.toBeInTheDocument();
+  });
+});
