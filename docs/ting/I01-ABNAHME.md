@@ -24,7 +24,7 @@ TING-Referenz.
 | Festgeschriebener LibreChat-Ausgangscommit | `9e83b10545e70b2f3d69a19c0cbe5121aaa86e5e` |
 | LibreChat-Version | `v0.8.8-rc3` |
 | TING-Designcommit | `44ae881d1d29f5db14d5b0dcae211865687555f4` |
-| Getesteter Implementierungscommit | `WIRD_NACH_DEM_TING_ROOT_COMMIT_EINGETRAGEN` |
+| Getesteter Implementierungscommit | `eb467cf58c1332050f177fdcfc0598380c4edbf8` |
 | Projekt-Remote | Kein Remote konfiguriert; kein Push ausgeführt. |
 | Gebaute App | <http://localhost:3080> |
 | Vite-Entwicklungseinstieg | <http://localhost:3090> |

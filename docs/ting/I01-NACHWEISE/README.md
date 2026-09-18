@@ -33,7 +33,7 @@ direktes Referenzpaar vor.
 | Zoom | Für die direkten Vergleichssätze nicht protokolliert. Das In-App-Browserwerkzeug stellte keinen nativen Seitenzoom bereit. Die entsprechend benannte Datei ist nur der dokumentierte Versuch mit verkleinertem Viewport und belegt keinen 200-Prozent-Browserzoom. |
 | Schrift | Beide Metrikdateien melden für alle sieben Messungen `document.fonts.status = loaded`, `bundesSansLoaded = true` und die berechnete Familie `BundesSansWeb, Calibri, Verdana, Arial, sans-serif`. Einzelne Netzwerkanfragen und der tatsächlich je Glyphe verwendete Font wurden nicht mitgespeichert. |
 | Fokus, Scrollposition und Animationen | Nur soweit im jeweiligen Bild sichtbar. Ein reproduzierbares Zustands- und Warteprotokoll fehlt. |
-| Implementierungsstand | `WIRD_NACH_DEM_TING_ROOT_COMMIT_EINGETRAGEN`; nach späteren UI-Änderungen müssen betroffene Aufnahmen erneut erstellt werden. |
+| Implementierungsstand | `eb467cf58c1332050f177fdcfc0598380c4edbf8`; nach späteren UI-Änderungen müssen betroffene Aufnahmen erneut erstellt werden. |
 | Bildformat | Referenz- und Implementierungsaufnahmen sind verlustbehaftete JPEGs; Überlagerungen und Differenzen sind PNGs. JPEG-Artefakte können numerische Pixelwerte beeinflussen. |
 
 Damit ist die in Abschnitt 8.4 verlangte identische und reproduzierbar dokumentierte
