@@ -600,11 +600,11 @@
     width: min(280px, 100vw);
     min-width: min(280px, 100vw);
     transform: translateX(-100%);
-    box-shadow: var(--ting-shadow-drawer);
   }
 
   .ting-sidebar--drawer.ting-sidebar--open {
     transform: translateX(0);
+    box-shadow: var(--ting-shadow-drawer);
   }
 
   .ting-sidebar-search input {
