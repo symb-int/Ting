@@ -106,6 +106,7 @@ const TwoFactorScreen: React.FC = React.memo(() => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <InputOTP
+                  aria-label={localize('com_ui_authenticator_code')}
                   maxLength={6}
                   value={value != null ? value : ''}
                   onChange={onChange}
@@ -135,6 +136,7 @@ const TwoFactorScreen: React.FC = React.memo(() => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <InputOTP
+                  aria-label={localize('com_ui_backup_code')}
                   maxLength={8}
                   value={value != null ? value : ''}
                   onChange={onChange}

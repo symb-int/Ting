@@ -23,6 +23,7 @@ import './ting/styles/tokens.css';
 import './ting/styles/global.css';
 import './ting/styles/auth.css';
 import './ting/styles/chat.css';
+import './ting/styles/account.css';
 
 const App = () => {
   const { setError } = useApiErrorBoundary();

@@ -1,1 +1,1 @@
-export { default as SettingsDialog } from './Dialog';
+export { default as SettingsPage } from './Page';

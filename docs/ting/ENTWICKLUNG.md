@@ -52,6 +52,19 @@ MongoDB und Meilisearch werden nicht auf Hostports veröffentlicht. Ihre Daten, 
 lokale Profilbilder liegen in benannten Docker-Volumes und bleiben bei Neustarts und `compose down`
 erhalten.
 
+## Vorhandenen Stand aktualisieren
+
+Bei bereits eingerichtetem Stack im Repositoryroot ausführen:
+
+```sh
+git pull --ff-only
+docker compose -f compose.ting.yaml up -d --build
+```
+
+Der Docker-Build baut die gemeinsamen Pakete und die Oberfläche aus den neuen Quellen.
+Vorhandene `.env`, Konten, Chats und Profilbilder bleiben erhalten. Für diese
+Designkorrekturen ist keine Datenmigration und keine erneute Einrichtung nötig.
+
 ## Frontend mit Hot Reload
 
 Der Compose-Stack stellt weiterhin API, MongoDB und Meilisearch bereit. In einem zweiten Terminal

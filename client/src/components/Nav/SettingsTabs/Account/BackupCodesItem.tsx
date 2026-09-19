@@ -87,7 +87,7 @@ const BackupCodesItem: React.FC = () => {
 
   return (
     <OGDialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-      <div className="flex items-center justify-between">
+      <div className="ting-setting-row">
         <div className="flex items-center space-x-3">
           <Label className="font-light">{localize('com_ui_backup_codes')}</Label>
         </div>

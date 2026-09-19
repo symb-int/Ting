@@ -45,17 +45,26 @@
   --ting-color-warning-surface: rgb(var(--ting-rgb-warning-surface));
   --ting-color-warning-border: rgb(var(--ting-rgb-warning-border));
 
-  --ting-space-1: 2px;
-  --ting-space-2: 4px;
-  --ting-space-3: 6px;
-  --ting-space-4: 8px;
-  --ting-space-5: 12px;
-  --ting-space-6: 16px;
-  --ting-space-7: 24px;
-  --ting-space-8: 32px;
-  --ting-space-9: 48px;
-  --ting-space-10: 64px;
-  --ting-space-11: 96px;
+  /* Canonical names and values from the approved TING tokens.css (version 28). */
+  --ting-space-2: 2px;
+  --ting-space-4: 4px;
+  --ting-space-6: 6px;
+  --ting-space-8: 8px;
+  --ting-space-12: 12px;
+  --ting-space-16: 16px;
+  --ting-space-24: 24px;
+  --ting-space-32: 32px;
+  --ting-space-48: 48px;
+  --ting-space-64: 64px;
+  --ting-space-96: 96px;
+
+  --ting-gap-label: var(--ting-space-4);
+  --ting-gap-related: var(--ting-space-8);
+  --ting-gap-block: var(--ting-space-16);
+  --ting-gap-section: var(--ting-space-24);
+  --ting-gap-expanded-surface: var(--ting-space-16);
+  --ting-inset-surface: var(--ting-space-16);
+  --ting-inset-compact: var(--ting-space-12);
 
   --ting-radius-field: 2px;
   --ting-radius-control: 5px;
@@ -130,8 +139,8 @@
   --theme-surface-radius: var(--ting-radius-status);
   --theme-large-surface-radius: var(--ting-radius-composer);
   --theme-control-height: 40px;
-  --theme-space-compact: var(--ting-space-3);
-  --theme-space-normal: var(--ting-space-5);
+  --theme-space-compact: var(--ting-space-6);
+  --theme-space-normal: var(--ting-space-12);
   --theme-font-family: var(--ting-font-family);
   color-scheme: light;
 }

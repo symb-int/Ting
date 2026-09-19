@@ -49,7 +49,7 @@ function Login() {
   const handleLogin = (data: TLoginUser) => {
     setRegistrationComplete(false);
     sessionStorage.removeItem(REGISTRATION_COMPLETE_SESSION_KEY);
-    login(data);
+    return login(data);
   };
 
   useEffect(() => {

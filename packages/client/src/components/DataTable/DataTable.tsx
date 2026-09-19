@@ -37,6 +37,7 @@ function DataTable<TData extends Record<string, unknown>, TValue>({
   data,
   getRowId: getRowIdProp,
   className = '',
+  emptyState,
   isLoading = false,
   isFetching = false,
   config,
@@ -730,24 +731,27 @@ function DataTable<TData extends Record<string, unknown>, TValue>({
           </TableBody>
         </Table>
 
-        {!isLoading && !showSkeletons && rows.length === 0 && (
-          <div
-            className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-12"
-            role="status"
-            aria-live="polite"
-          >
-            <span className="flex size-11 items-center justify-center rounded-full bg-surface-tertiary text-text-tertiary">
-              {searchTerm ? (
-                <SearchX className="size-5" aria-hidden="true" />
-              ) : (
-                <Inbox className="size-5" aria-hidden="true" />
-              )}
-            </span>
-            <Label className="text-center text-sm text-text-secondary">
-              {searchTerm ? localize('com_ui_no_search_results') : localize('com_ui_no_data')}
-            </Label>
-          </div>
-        )}
+        {!isLoading &&
+          !showSkeletons &&
+          rows.length === 0 &&
+          (emptyState ?? (
+            <div
+              className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-12"
+              role="status"
+              aria-live="polite"
+            >
+              <span className="flex size-11 items-center justify-center rounded-full bg-surface-tertiary text-text-tertiary">
+                {searchTerm ? (
+                  <SearchX className="size-5" aria-hidden="true" />
+                ) : (
+                  <Inbox className="size-5" aria-hidden="true" />
+                )}
+              </span>
+              <Label className="text-center text-sm text-text-secondary">
+                {searchTerm ? localize('com_ui_no_search_results') : localize('com_ui_no_data')}
+              </Label>
+            </div>
+          ))}
       </div>
     </div>
   );

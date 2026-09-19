@@ -310,12 +310,8 @@ function Conversation({
   return (
     <div
       ref={containerRef}
-      className={cn(
-        'ting-convo-row group relative flex h-10 w-full items-center rounded-lg outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-text-primary',
-        isActiveConvo || isPopoverActive
-          ? 'bg-surface-active-alt before:absolute before:bottom-1 before:left-0 before:top-1 before:w-0.5 before:rounded-full before:bg-text-primary'
-          : 'hover:bg-surface-active-alt',
-      )}
+      className="ting-convo-row group relative flex h-10 w-full items-center outline-none"
+      data-menu-open={isPopoverActive || undefined}
       onMouseEnter={handleMouseEnter}
       onFocus={handleMouseEnter}
       onClick={(e) => {

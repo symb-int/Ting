@@ -1,6 +1,7 @@
 import { useState, memo, useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
 import * as Menu from '@ariakit/react/menu';
+import { useNavigate } from 'react-router-dom';
 import { GearIcon, DropdownMenuSeparator, Avatar } from '@librechat/client';
 import {
   Archive,
@@ -13,10 +14,10 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { ArchivedChatsModal } from '~/components/Nav/SettingsTabs/General/ArchivedChatsModal';
+import useSidebarToggle from '~/hooks/Nav/useSidebarToggle';
 import { useGetStartupConfig } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
-import Settings from './Settings';
 import store from '~/store';
 
 function HelpSubmenu({
@@ -94,7 +95,8 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
   const localize = useLocalize();
   const { user, logout } = useAuthContext();
   const { data: startupConfig } = useGetStartupConfig();
-  const [showSettings, setShowSettings] = useState(false);
+  const navigate = useNavigate();
+  const { setSidebarOpen } = useSidebarToggle();
   const setShowShortcutsDialog = useSetRecoilState(store.showShortcutsDialog);
   const [showArchived, setShowArchived] = useState(false);
   const accountSettingsButtonRef = useRef<HTMLButtonElement>(null);
@@ -139,7 +141,10 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
         </div>
         <DropdownMenuSeparator />
         <Menu.MenuItem
-          onClick={() => setShowSettings(true)}
+          onClick={() => {
+            navigate('/settings');
+            setSidebarOpen(false);
+          }}
           className="ting-menu__item select-item text-sm"
           data-testid="nav-settings"
         >
@@ -172,7 +177,6 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
           triggerRef={accountSettingsButtonRef}
         />
       )}
-      {showSettings && <Settings open={showSettings} onOpenChange={setShowSettings} />}
     </Menu.MenuProvider>
   );
 }

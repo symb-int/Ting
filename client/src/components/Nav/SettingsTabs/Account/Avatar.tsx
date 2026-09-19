@@ -187,7 +187,7 @@ function Avatar() {
         }
       }}
     >
-      <div className="flex items-center justify-between">
+      <div className="ting-setting-row">
         <span>{localize('com_nav_profile_picture')}</span>
         <OGDialogTrigger asChild>
           <TingButton variant="secondary" size="compact">

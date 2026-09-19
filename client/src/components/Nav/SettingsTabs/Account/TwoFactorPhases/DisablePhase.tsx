@@ -34,6 +34,7 @@ export const DisablePhase: React.FC<DisablePhaseProps> = ({ onDisable, isDisabli
     <motion.div {...fadeAnimation} className="space-y-8">
       <div className="flex justify-center">
         <InputOTP
+          aria-label={localize(useBackup ? 'com_ui_backup_code' : 'com_ui_authenticator_code')}
           value={token}
           onChange={setToken}
           maxLength={useBackup ? 8 : 6}

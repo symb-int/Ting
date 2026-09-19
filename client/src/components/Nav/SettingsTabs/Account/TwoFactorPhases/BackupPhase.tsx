@@ -31,18 +31,18 @@ export const BackupPhase: React.FC<BackupPhaseProps> = ({
   return (
     <motion.div {...fadeAnimation} className="space-y-6">
       <Label className="break-keep text-sm">{localize('com_ui_download_backup_tooltip')}</Label>
-      <div className="grid grid-cols-2 gap-4 rounded-[5px] bg-surface-secondary p-6">
+      <div className="grid grid-cols-2 gap-2 rounded-[5px] bg-surface-secondary p-4">
         {backupCodes.map((code, index) => (
           <motion.div
             key={code}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="rounded-[5px] bg-surface-tertiary p-3"
+            className="rounded-[5px] bg-surface-tertiary p-2"
           >
             <div className="flex items-center justify-between">
               <span className="hidden text-sm text-text-secondary sm:inline">#{index + 1}</span>
-              <span className="font-mono text-lg">{code}</span>
+              <span className="font-mono text-sm">{code}</span>
             </div>
           </motion.div>
         ))}
@@ -50,7 +50,7 @@ export const BackupPhase: React.FC<BackupPhaseProps> = ({
       <div className="flex gap-4">
         <TingButton variant="secondary" size="compact" onClick={onDownload} className="flex-1">
           <Download className="h-4 w-4" aria-hidden="true" />
-          <span className="hidden sm:inline">{localize('com_ui_download_backup')}</span>
+          <span>{localize('com_ui_download_backup')}</span>
         </TingButton>
         <TingButton
           variant="primary"

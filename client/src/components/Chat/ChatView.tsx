@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { useRecoilValue } from 'recoil';
 import { useForm } from 'react-hook-form';
+import { LockKeyhole } from 'lucide-react';
 import { Spinner } from '@librechat/client';
 import { useParams } from 'react-router-dom';
 import { Constants, buildTree } from 'librechat-data-provider';
@@ -191,6 +192,10 @@ function ChatView({ index = 0, project }: { index?: number; project?: TChatProje
                             centerFormOnLanding={centerFormOnLanding}
                           />
                         )}
+                        <div className="ting-composer-privacy">
+                          <LockKeyhole strokeWidth={1.65} aria-hidden="true" />
+                          <span>{localize('com_ting_private_conversation')}</span>
+                        </div>
                         {configuredFooter && <Footer configuredOnly />}
                       </div>
                     </div>

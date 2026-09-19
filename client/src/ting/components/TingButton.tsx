@@ -34,7 +34,7 @@ const TingButton = React.forwardRef<HTMLButtonElement, TingButtonProps>(
       size={null}
       shape={null}
       className={cn(
-        'ting-button ting-control h-auto border font-normal transition-colors focus-visible:ring-0 focus-visible:ring-offset-0',
+        'ting-button ting-control h-auto max-w-full whitespace-normal break-words border font-normal transition-colors focus-visible:ring-0 focus-visible:ring-offset-0',
         variantClasses[variant],
         sizeClasses[size],
         className,

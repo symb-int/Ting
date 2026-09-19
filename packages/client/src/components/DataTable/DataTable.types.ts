@@ -96,6 +96,7 @@ export interface DataTableProps<TData extends Record<string, unknown>, TValue> {
   data: TData[];
   getRowId?: (row: TData, index: number) => string;
   className?: string;
+  emptyState?: React.ReactNode;
   isLoading?: boolean;
   isFetching?: boolean;
   config?: DataTableConfig;

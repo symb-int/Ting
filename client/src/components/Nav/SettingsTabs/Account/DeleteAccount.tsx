@@ -62,7 +62,7 @@ const DeleteAccount = ({ disabled = false }: { title?: string; disabled?: boolea
   return (
     <>
       <OGDialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-        <div className="flex items-center justify-between">
+        <div className="ting-setting-row">
           <Label id="delete-account-label">{localize('com_nav_delete_account')}</Label>
           <OGDialogTrigger asChild>
             <TingButton

@@ -32,6 +32,7 @@ export const VerifyPhase: React.FC<VerifyPhaseProps> = ({
     <motion.div {...fadeAnimation} className="space-y-8">
       <div className="flex justify-center">
         <InputOTP
+          aria-label={localize('com_ui_authenticator_code')}
           value={token}
           onChange={onTokenChange}
           maxLength={6}

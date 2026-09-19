@@ -2,6 +2,9 @@
 
 Stand: 18. September 2026
 
+Aktueller Korrekturlauf: [Run 1 – Designabgleich](RUN1-DESIGNABGLEICH.md). Die folgenden
+Ergebnisse beschreiben den dort genannten historischen Commit, nicht den aktuellen Branch.
+
 Dieses Protokoll führt ausschließlich tatsächlich ausgeführte Prüfungen auf. Technische,
 funktionale und visuelle Nachweise werden getrennt bewertet. Insbesondere ergibt sich aus einem
 grünen Build, Typecheck oder Browserablauf noch keine vollständige visuelle Übereinstimmung mit der

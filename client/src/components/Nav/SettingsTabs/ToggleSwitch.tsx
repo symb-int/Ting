@@ -43,7 +43,7 @@ const RecoilToggle: React.FC<
   const labelId = `${switchId}-label`;
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="ting-setting-row flex items-center justify-between">
       <div className="flex items-center space-x-2">
         <div id={labelId}>
           {strongLabel ? <strong>{localize(localizationKey)}</strong> : localize(localizationKey)}
@@ -85,7 +85,7 @@ const JotaiToggle: React.FC<
   const labelId = `${switchId}-label`;
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="ting-setting-row flex items-center justify-between">
       <div className="flex items-center space-x-2">
         <div id={labelId}>
           {strongLabel ? <strong>{localize(localizationKey)}</strong> : localize(localizationKey)}

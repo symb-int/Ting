@@ -11,7 +11,7 @@ import { validateEmail } from '~/utils';
 import { useLocalize } from '~/hooks';
 
 type TLoginFormProps = {
-  onSubmit: (data: TLoginUser) => void;
+  onSubmit: (data: TLoginUser) => Promise<void>;
   startupConfig: TStartupConfig;
   error: Pick<TAuthContext, 'error'>['error'];
   setError: Pick<TAuthContext, 'setError'>['setError'];
@@ -27,9 +27,8 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
   } = useForm<TLoginUser>();
   const [showResendLink, setShowResendLink] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [requestPending, setRequestPending] = useState(false);
   const requireCaptcha = Boolean(startupConfig.turnstile?.siteKey);
-  const pending = requestPending || isSubmitting;
+  const pending = isSubmitting;
   const showSecretLabel = `${localize('com_ui_show')} ${localize('com_auth_password')}`;
   const hideSecretLabel = `${localize('com_ui_hide')} ${localize('com_auth_password')}`;
 
@@ -37,7 +36,6 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
     if (error == null) {
       return;
     }
-    setRequestPending(false);
     if (error.includes('422')) {
       setShowResendLink(true);
     }
@@ -59,10 +57,9 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
     resendLinkMutation.mutate({ email });
   };
 
-  const submitLogin = (data: TLoginUser) => {
+  const submitLogin = async (data: TLoginUser) => {
     setError(undefined);
-    setRequestPending(true);
-    onSubmit(data);
+    await onSubmit(data);
   };
 
   return (

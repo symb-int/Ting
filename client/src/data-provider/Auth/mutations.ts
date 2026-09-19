@@ -167,6 +167,7 @@ export const useConfirmTwoFactorMutation = (): UseMutationResult<
   return useMutation((payload: t.TVerify2FARequest) => dataService.confirmTwoFactor(payload), {
     onSuccess: (data) => {
       queryClient.setQueryData([QueryKeys.user, '2fa'], data);
+      return queryClient.invalidateQueries([QueryKeys.user], { exact: true });
     },
   });
 };
@@ -181,6 +182,7 @@ export const useDisableTwoFactorMutation = (): UseMutationResult<
   return useMutation((payload?: t.TDisable2FARequest) => dataService.disableTwoFactor(payload), {
     onSuccess: () => {
       queryClient.setQueryData([QueryKeys.user, '2fa'], null);
+      return queryClient.invalidateQueries([QueryKeys.user], { exact: true });
     },
   });
 };

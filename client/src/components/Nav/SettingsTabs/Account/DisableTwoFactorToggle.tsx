@@ -21,7 +21,7 @@ export const DisableTwoFactorToggle: React.FC<DisableTwoFactorToggleProps> = ({
   const localize = useLocalize();
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="ting-setting-row">
       <div className="flex items-center space-x-2">
         <Label> {localize('com_nav_2fa')}</Label>
       </div>

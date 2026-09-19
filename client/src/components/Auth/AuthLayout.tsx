@@ -68,8 +68,8 @@ function AuthLayout({
             <p className="ting-auth-tagline">{localize('com_auth_ting_tagline')}</p>
           </div>
           <DisplayError />
-          {!isFetching && children}
-          {!isFetching &&
+          {(!isFetching || startupConfig != null) && children}
+          {(!isFetching || startupConfig != null) &&
             !pathname.includes('2fa') &&
             (pathname.includes('login') || pathname.includes('register')) && (
               <SocialLoginRender startupConfig={startupConfig} />

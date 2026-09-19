@@ -194,21 +194,30 @@ const AuthContextProvider = ({
   });
   const refreshToken = useRefreshTokenMutation();
 
+  const { mutate: submitLogout } = logoutUser;
   const logout = useCallback(
     (redirect?: string) => {
       if (redirect) {
         logoutRedirectRef.current = redirect;
       }
-      logoutUser.mutate(undefined);
+      submitLogout(undefined);
     },
-    [logoutUser],
+    [submitLogout],
   );
 
   const userQuery = useGetUserQuery({ enabled: !!(token ?? '') });
 
-  const login = (data: t.TLoginUser) => {
-    loginUser.mutate(data);
-  };
+  const { mutateAsync: submitLogin } = loginUser;
+  const login = useCallback(
+    async (data: t.TLoginUser) => {
+      try {
+        await submitLogin(data);
+      } catch {
+        // The mutation's onError owns the visible error and redirect.
+      }
+    },
+    [submitLogin],
+  );
 
   const silentRefresh = useCallback(() => {
     if (authConfig?.test === true) {
@@ -337,10 +346,10 @@ const AuthContextProvider = ({
       isAuthReady,
     }),
 
-    /** `login` is a plain function rebuilt every render, so depending on it would rebuild this
-     * context value every render and re-render every consumer of auth state. */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
+      login,
+      logout,
+      setError,
       user,
       error,
       isAuthenticated,

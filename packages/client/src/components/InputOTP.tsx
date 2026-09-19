@@ -70,7 +70,7 @@ const InputOTP: React.ForwardRefExoticComponent<
   <OTPInput
     ref={ref}
     containerClassName={cn(
-      'flex items-center gap-2 has-[:disabled]:opacity-50',
+      'flex max-w-full items-center gap-2 has-[:disabled]:opacity-50',
       containerClassName,
     )}
     className={cn('disabled:cursor-not-allowed', className)}
@@ -84,7 +84,7 @@ const InputOTPGroup: React.ForwardRefExoticComponent<
     React.RefAttributes<HTMLDivElement>
 > = React.forwardRef<React.ElementRef<'div'>, React.ComponentPropsWithoutRef<'div'>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex items-center', className)} {...props} />
+    <div ref={ref} className={cn('flex min-w-0 items-center', className)} {...props} />
   ),
 );
 InputOTPGroup.displayName = 'InputOTPGroup';
@@ -109,7 +109,7 @@ const InputOTPSlot: React.ForwardRefExoticComponent<
     <div
       ref={ref}
       className={cn(
-        'relative flex h-11 w-11 items-center justify-center border-y border-r border-border-medium text-base shadow-sm transition-all first:rounded-l-xl first:border-l last:rounded-r-xl',
+        'relative flex h-11 w-11 min-w-0 items-center justify-center border-y border-r border-border-medium text-base shadow-sm transition-all first:rounded-l-xl first:border-l last:rounded-r-xl',
         isActive && 'z-10 ring-1 ring-text-primary',
         className,
       )}

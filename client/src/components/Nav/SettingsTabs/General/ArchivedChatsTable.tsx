@@ -4,7 +4,6 @@ import { useRecoilValue } from 'recoil';
 import { Link } from 'react-router-dom';
 import { TrashIcon, ExternalLink, ArchiveRestore } from 'lucide-react';
 import {
-  Button,
   Spinner,
   OGDialog,
   OGDialogClose,
@@ -24,11 +23,11 @@ import {
   useDeleteConversationMutation,
   useArchiveConvoMutation,
 } from '~/data-provider';
+import { TingButton, TingIconButton, TingEmptyState } from '~/ting';
 import { MinimalIcon } from '~/components/Endpoints';
 import { NotificationSeverity } from '~/common';
 import { formatDate, logger } from '~/utils';
 import { useLocalize } from '~/hooks';
-import { TingButton } from '~/ting';
 import store from '~/store';
 
 const DEFAULT_PARAMS: ConversationListParams = {
@@ -223,36 +222,32 @@ export default function ArchivedChatsTable() {
               <TooltipAnchor
                 description={localize('com_ui_unarchive_conversation')}
                 render={
-                  <Button
-                    variant="row-action"
-                    size="icon-sm"
+                  <TingIconButton
                     onClick={() =>
                       unarchiveConversation({
                         conversationId: conversation.conversationId ?? '',
                         isArchived: false,
                       })
                     }
-                    aria-label={localize('com_ui_unarchive_conversation')}
+                    label={localize('com_ui_unarchive_conversation')}
                     disabled={isUnarchiving}
                   >
                     {isUnarchiving ? <Spinner /> : <ArchiveRestore className="size-4" />}
-                  </Button>
+                  </TingIconButton>
                 }
               />
               <TooltipAnchor
                 description={localize('com_ui_delete_conversation_tooltip')}
                 render={
-                  <Button
-                    variant="row-action"
-                    size="icon-sm"
+                  <TingIconButton
                     onClick={() => {
                       setDeleteConversation(row.original);
                       setIsDeleteOpen(true);
                     }}
-                    aria-label={localize('com_ui_delete_conversation_tooltip')}
+                    label={localize('com_ui_delete_conversation_tooltip')}
                   >
                     <TrashIcon className="size-4" />
-                  </Button>
+                  </TingIconButton>
                 }
               />
             </div>
@@ -268,13 +263,20 @@ export default function ArchivedChatsTable() {
 
   return (
     <>
-      {/* The skeleton count matches the minimum height so the loading and loaded
-          states are close in size, while a short list still collapses the box. */}
       <VirtualizedDataTable
         columns={columns}
         data={allConversations}
         getRowId={getRowId}
-        className="scrollbar-gutter-stable max-h-[60vh] min-h-80"
+        className="scrollbar-gutter-stable max-h-[60vh]"
+        emptyState={
+          <TingEmptyState
+            role="status"
+            className="m-4"
+            title={localize(
+              queryParams.search ? 'com_ting_no_cases_found' : 'com_ting_no_archived_cases',
+            )}
+          />
+        }
         onFilterChange={handleFilterChange}
         filterValue={queryParams.search}
         fetchNextPage={handleFetchNextPage}

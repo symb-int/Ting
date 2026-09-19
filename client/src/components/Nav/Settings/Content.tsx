@@ -55,7 +55,7 @@ export default function Content({ activeTab, query, ctx }: ContentProps) {
   }
 
   return (
-    <div>
+    <div className="ting-settings-sections">
       {tab.sections.map((section) => {
         const entries = registry.filter(
           (e) => e.tab === activeTab && e.section === section.id && visible(e, ctx),

@@ -10,17 +10,17 @@ interface SectionProps {
 
 export default function Section({ heading, icon, danger, children }: SectionProps) {
   return (
-    <section className="mb-6 last:mb-0">
-      <h3
+    <section className="ting-account-section">
+      <h2
         className={cn(
-          'mb-3 flex items-center gap-1.5 text-sm font-bold leading-[1.45]',
-          danger ? 'text-text-destructive' : 'text-text-secondary',
+          'flex items-center gap-1.5 font-bold',
+          danger ? 'text-text-destructive' : 'text-text-primary',
         )}
       >
         {icon}
         {heading}
-      </h3>
-      <div className="flex flex-col gap-4 text-sm leading-[1.45] text-text-primary">{children}</div>
+      </h2>
+      <div className="ting-settings-rows">{children}</div>
     </section>
   );
 }

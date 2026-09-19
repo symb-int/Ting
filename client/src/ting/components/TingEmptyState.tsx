@@ -17,12 +17,14 @@ const TingEmptyState = React.forwardRef<HTMLDivElement, TingEmptyStateProps>(
       )}
       {...props}
     >
-      <p className="text-sm font-bold leading-[1.45] text-text-primary">{title}</p>
+      <p className="break-words text-sm font-bold leading-[1.45] text-text-primary">{title}</p>
       {description != null && (
-        <p className="text-sm font-normal leading-[1.45] text-text-secondary">{description}</p>
+        <p className="max-w-[60ch] break-words text-sm font-normal leading-[1.45] text-text-secondary">
+          {description}
+        </p>
       )}
       {children}
-      {action != null && <div className="mt-1">{action}</div>}
+      {action != null && <div className="mt-1 flex max-w-full flex-wrap">{action}</div>}
     </div>
   ),
 );
