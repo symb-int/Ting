@@ -10,6 +10,7 @@ export default defineConfig({
   use: {
     ...baseConfig.use,
     baseURL,
+    viewport: { width: 1440, height: 900 },
     video: 'off',
     launchOptions: {
       ...(process.env.TING_CHROMIUM_PATH ? { executablePath: process.env.TING_CHROMIUM_PATH } : {}),

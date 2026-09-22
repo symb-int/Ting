@@ -197,7 +197,7 @@ test('I02: real workshop permissions, publication, conflict, direct procedure st
       fullPage: true,
     });
 
-    for (const width of [799, 390, 320]) {
+    for (const width of [800, 799, 320, 390]) {
       await page.setViewportSize({ width, height: 844 });
       expect(
         await page.locator('.ting-workshop').evaluate((el) => el.scrollWidth <= el.clientWidth),

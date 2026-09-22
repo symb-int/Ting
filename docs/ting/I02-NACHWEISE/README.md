@@ -12,7 +12,9 @@ Zugriffsverweigerung, die native Berechtigungsvergabe und den Entzug, die leere 
 Formularvalidierung, Entwurf, Veröffentlichung, Ausschluss unveröffentlichter Änderungen
 aus dem Bürgerkatalog, konkurrierende Bearbeitung mit HTTP 409 und erhaltenen Eingaben,
 Verfahrensstart ohne Modell, erhaltenen Nachrichtenentwurf, Wiederherstellung nach Reload,
-mobile Breiten 799/390/320 und die Trennung privater Gespräche zweier Konten.
+die Umschaltgrenze 800/799 px, mobile Breiten 390/320 px und die Trennung privater
+Gespräche zweier Konten. Desktopaufnahmen verwenden 1440 × 900 CSS-Pixel;
+die mobile Werkstattaufnahme verwendet 390 × 844 CSS-Pixel.
 
 Die beigefügten Aufnahmen stammen aus diesem erfolgreichen Lauf:
 
@@ -52,6 +54,10 @@ Dieser Test startet selbst eine isolierte echte Datenbank und die Anwendung auf 
 nicht auf eine laufende Installation zu.
 
 ## Noch nicht nachgewiesen
+
+Ein vollständiger visueller Abgleich aller in der Spec geforderten Zustände mit
+Referenzaufnahmen und Überlagerungen liegt noch nicht vor. Die vorhandenen Aufnahmen
+und der CSS-/Schriftvergleich belegen nur die beschriebenen geprüften Ansichten.
 
 Ein echter semantischer Modelllauf konnte in dieser Umgebung mangels OpenAI-Schlüssel
 und freigeschalteter Modell-ID nicht durchgeführt werden. Modellabhängige Grenztests mit
