@@ -32,6 +32,7 @@ import store from '~/store';
 export const useAutoSave = ({
   index = 0,
   isSubmitting,
+  preserveDraftDuringSubmission = false,
   conversationId: _conversationId,
   draftId,
   textAreaRef,
@@ -40,6 +41,8 @@ export const useAutoSave = ({
 }: {
   index?: number;
   isSubmitting?: boolean;
+  /** A server-owned choice sends its own answer while leaving the composer intact. */
+  preserveDraftDuringSubmission?: boolean;
   conversationId?: string | null;
   /** Explicit draft-key override: wins over the conversation id AND the
    *  PENDING_CONVO redirect. Set while an `ask_user_question` pause turns the
@@ -58,7 +61,9 @@ export const useAutoSave = ({
   const pendingDraftId = getPendingDraftId(index);
   const conversationDraftId =
     _conversationId === Constants.NEW_CONVO ? getNewConversationDraftId(index) : _conversationId;
-  const conversationId = draftId ?? (isSubmitting ? pendingDraftId : conversationDraftId);
+  const conversationId =
+    draftId ??
+    (isSubmitting && !preserveDraftDuringSubmission ? pendingDraftId : conversationDraftId);
 
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const fileIds = useMemo(() => Array.from(files.keys()), [files]);
@@ -278,6 +283,18 @@ export const useAutoSave = ({
 
   const prevConversationIdRef = useRef<string | null>(null);
   const pendingDestinationRef = useRef<string | null>(null);
+  const preservedActionOriginRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (
+      preserveDraftDuringSubmission &&
+      isSubmitting &&
+      (preservedActionOriginRef.current == null ||
+        (conversationDraftId != null && isNewConversationDraftId(conversationDraftId)))
+    ) {
+      preservedActionOriginRef.current = conversationDraftId ?? null;
+    }
+  }, [preserveDraftDuringSubmission, isSubmitting, conversationDraftId]);
 
   useEffect(() => {
     // This useEffect is responsible for saving the current conversation's draft and
@@ -300,8 +317,32 @@ export const useAutoSave = ({
     let filesDraftId = conversationId;
     let textDraftId = conversationId;
     let nextConversationId = conversationId;
+    let movedActionDraft = false;
 
     try {
+      if (
+        preservedActionOriginRef.current === currentConversationId &&
+        currentConversationId != null &&
+        isNewConversationDraftId(currentConversationId) &&
+        !isNewConversationDraftId(conversationId) &&
+        conversationId !== pendingDraftId &&
+        isFilesDraftOwnedByThisTab(getFilesDraft(conversationId)) &&
+        mayWriteComposerText(conversationId)
+      ) {
+        // Selection gives an unsaved chat its durable ID. Its composer was
+        // never consumed, so move this tab's draft with that conversation.
+        if (isFilesDraftOwnedByThisTab(getFilesDraft(currentConversationId))) {
+          migrateTextDraft(currentConversationId, conversationId);
+          migrateFilesDraft(currentConversationId, conversationId);
+        }
+        setDraft({
+          id: conversationId,
+          value: textAreaRef?.current?.value ?? '',
+          persistExact: true,
+        });
+        preservedActionOriginRef.current = null;
+        movedActionDraft = true;
+      }
       // Check for transition from PENDING_CONVO to a valid conversationId.
       // An ask-answer key is excluded: it is a temporary overlay, not the
       // pending draft's destination. Migrating would delete the very draft
@@ -390,7 +431,7 @@ export const useAutoSave = ({
             setFiles(filesRef.current);
           }
         }
-      } else if (currentConversationId != null && currentConversationId) {
+      } else if (!movedActionDraft && currentConversationId != null && currentConversationId) {
         saveText(currentConversationId);
       }
 
@@ -407,6 +448,7 @@ export const useAutoSave = ({
   }, [
     currentConversationId,
     conversationId,
+    preserveDraftDuringSubmission,
     pendingDraftId,
     restoreFiles,
     textAreaRef,

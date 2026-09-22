@@ -1,4 +1,8 @@
 export enum QueryKeys {
+  tingCapabilities = 'tingCapabilities',
+  tingCatalog = 'tingCatalog',
+  tingProcedures = 'tingProcedures',
+  tingProcedure = 'tingProcedure',
   messages = 'messages',
   sharedMessages = 'sharedMessages',
   sharedStartupConfig = 'sharedStartupConfig',
@@ -111,6 +115,8 @@ export const DynamicQueryKeys = {
 } as const;
 
 export enum MutationKeys {
+  createTingProcedure = 'createTingProcedure',
+  updateTingProcedure = 'updateTingProcedure',
   subagentControl = 'subagentControl',
   enqueueAgentQueuedTurn = 'enqueueAgentQueuedTurn',
   cancelAgentQueuedTurn = 'cancelAgentQueuedTurn',

@@ -248,6 +248,7 @@ const ChatForm = memo(function ChatForm({
    *  collapsed batch is neither — it hands the composer back to the thread. */
   const composerReserved = answerMode.composerAnswers || answerMode.composerLocked;
 
+  const submission = useRecoilValue(store.submissionByIndex(index));
   const consumeDraft = useAutoSave({
     index,
     files,
@@ -255,6 +256,7 @@ const ChatForm = memo(function ChatForm({
     textAreaRef,
     conversationId,
     isSubmitting,
+    preserveDraftDuringSubmission: submission?.tingAction != null,
     // While a question pause is live the composer is the answer box: drafts
     // swap to the answer's own key, and the conversation draft is restored
     // when the question resolves.

@@ -18,6 +18,14 @@ export default defineConfig({
   timeout: 300_000,
   retries: 0,
   reporter: [['line']],
+  use: {
+    ...mockConfig.use,
+    video: 'off',
+    launchOptions: {
+      ...mockConfig.use?.launchOptions,
+      ...(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}),
+    },
+  },
   webServer: servers.map((server) => ({
     ...server,
     env: {

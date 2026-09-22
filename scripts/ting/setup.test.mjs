@@ -61,6 +61,9 @@ describe('TING setup', () => {
     assert.equal(config.fileConfig.endpoints.default.disabled, true);
     assert.equal(config.modelSpecs, undefined);
     assert.equal(config.endpoints, undefined);
+    assert.equal(config.ting.matcher.implementation, 'llm');
+    assert.equal(config.ting.model.timeoutMs, 60_000);
+    assert.equal(config.ting.procedures.pageSize, 25);
   });
 
   it('is byte-stable on repetition and preserves existing values', async () => {
@@ -140,6 +143,12 @@ describe('TING setup', () => {
       assert.equal(unconfigured.modelSpecs, undefined);
       assert.equal(unconfigured.endpoints, undefined);
     }
+  });
+
+  it('preserves the selected matcher independently of provider availability', () => {
+    const config = createLibreChatConfig({ TING_MATCHER_IMPLEMENTATION: 'future-adapter' });
+    assert.equal(config.ting.matcher.implementation, 'future-adapter');
+    assert.equal(config.modelSpecs, undefined);
   });
 
   it('materializes the same private environment and derived config inside the container', async () => {

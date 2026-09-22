@@ -329,6 +329,8 @@ export type TAskProps = {
 };
 
 export type TOptions = {
+  /** Server-owned catalogue selection or clarification answer. Does not consume the composer. */
+  tingAction?: t.TingAction;
   editedMessageId?: string | null;
   editedContent?: t.TEditedContent;
   isRegenerate?: boolean;

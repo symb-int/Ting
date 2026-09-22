@@ -21,6 +21,8 @@ jest.mock('@librechat/agents', () => ({
 }));
 
 jest.mock('@librechat/api', () => ({
+  sanitizeMessageForTransmit: jest.requireActual('../../../../packages/api/src/utils/message.ts')
+    .sanitizeMessageForTransmit,
   createContentFilter: jest.fn(() => (req, res, next) => next()),
   inspectContent: jest.fn(() => null),
   extractFeedbackContent: jest.fn(() => []),

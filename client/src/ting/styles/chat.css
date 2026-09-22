@@ -272,6 +272,49 @@
   flex: none;
 }
 
+/* I02 uses the chat itself as the view. Only mobile navigation needs a header. */
+.ting-chat-header--navigation-only {
+  display: none;
+}
+
+/* I02 layout from the approved intake reference; controls use TingButton. */
+.ting-intake-catalog {
+  display: grid;
+  width: 100%;
+  max-width: 760px;
+  gap: var(--ting-space-12);
+  padding-inline: var(--ting-space-16);
+}
+
+.ting-intake-catalog h2 {
+  margin: 0;
+  color: var(--ting-color-text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.ting-intake-replies {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--ting-space-8);
+}
+
+.ting-intake-replies .ting-button {
+  text-align: left;
+}
+
+.ting-intake-catalog .ting-intake-replies {
+  justify-content: center;
+}
+
+.ting-intake-message-actions {
+  display: grid;
+  gap: var(--ting-space-16);
+  margin-top: var(--ting-space-16);
+}
+
 .ting-chat-header__copy {
   min-width: 0;
 }
@@ -488,6 +531,11 @@
   line-height: 1.35;
 }
 
+.ting-agent-scope {
+  color: var(--ting-color-text-secondary);
+  font-weight: 400;
+}
+
 .ting-agent-mark {
   display: grid;
   width: 20px;
@@ -626,6 +674,10 @@
   }
 
   .ting-chat-header__menu {
+    display: flex;
+  }
+
+  .ting-chat-header--navigation-only {
     display: flex;
   }
 

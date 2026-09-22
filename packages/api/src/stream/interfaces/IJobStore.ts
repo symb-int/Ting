@@ -1,13 +1,14 @@
 import type {
-  IAgentEventActorContextMeta,
-  ICompactionSemanticIndexProjection,
-} from '@librechat/data-schemas';
-import type {
   Agents,
   TFile,
   TPendingSteer,
   UserSubmittedMessageFieldPath,
+  TingIntake,
 } from 'librechat-data-provider';
+import type {
+  IAgentEventActorContextMeta,
+  ICompactionSemanticIndexProjection,
+} from '@librechat/data-schemas';
 import type { RunStep, StandardGraph } from '@librechat/agents';
 import type { AgentEventDetachedTerminalEvidence } from '~/agents/triggers/types';
 import type { EarlyBufferOverflowState } from '../../types/earlyBufferRecovery';
@@ -158,6 +159,8 @@ export interface SerializableJobData {
     /** Uploaded files for the turn, carried so a HITL resume sources them from the job
      *  rather than a user DB row whose save can still be racing the approval prompt. */
     files?: unknown[];
+    /** Server-only receipt; stripped from stream/reconnect projections. */
+    tingOperation?: NonNullable<TingIntake['operation']>;
   };
 
   /** Response message ID for reconnection */

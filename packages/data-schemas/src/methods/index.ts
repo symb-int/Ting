@@ -180,6 +180,14 @@ import {
 } from './mcpAuthority';
 /* Insights */
 import { createInsightsMethods, type InsightsMethods } from './insights';
+import {
+  createTingProcedureMethods,
+  TingProcedureError,
+  type TingProcedureMethods,
+} from './tingProcedure';
+
+export { TingProcedureError };
+export type { TingProcedureMethods };
 
 export {
   runAfterTransaction,
@@ -218,7 +226,8 @@ export {
   AgentQueuedTurnLaneRetiredError,
 };
 
-export type AllMethods = UserMethods &
+export type AllMethods = TingProcedureMethods &
+  UserMethods &
   SessionMethods &
   TokenMethods &
   RefreshTokenBridgeMethods &
@@ -441,6 +450,7 @@ export function createMethods(
   };
   const agentMethods = createAgentMethods(mongoose, agentDeps);
   return {
+    ...createTingProcedureMethods(mongoose),
     ...createUserMethods(mongoose, { getCache: deps.getCache }),
     ...createSessionMethods(mongoose),
     ...createTokenMethods(mongoose),

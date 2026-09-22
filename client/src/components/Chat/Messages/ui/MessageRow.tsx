@@ -98,7 +98,8 @@ export default function MessageRow({
               </span>
               <span className="sr-only">{headerPrefix}</span>
               <HeaderLabel label={localize('com_ting_name')} hoverLabel={null} />
-              <MessageTimestamp value={timestamp} className="ml-auto shrink-0 font-normal" />
+              <span className="ting-agent-scope">{localize('com_ting_private_with_you')}</span>
+              <MessageTimestamp value={timestamp} className="sr-only" />
             </h2>
           ))}
 

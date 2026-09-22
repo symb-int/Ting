@@ -1,6 +1,8 @@
 const { logger } = require('@librechat/data-schemas');
+const { initializeTingNative } = require('./ting');
 const { createContentAggregator, GraphNodeKeys } = require('@librechat/agents');
 const {
+  withTingInitializer,
   resolveSender,
   resolveRunConversation,
   resolveConversationCodeEnvironmentDecision,
@@ -1876,7 +1878,7 @@ const initializeClientWithProvider = async ({
  * @param {import('@librechat/api').HostUpstreamTokenProviderResolver} [dependencies.resolveUpstreamTokenProvider]
  */
 function createInitializeClient(dependencies = {}) {
-  return async (params) => {
+  return withTingInitializer(async (params) => {
     const upstreamTokenProviderResolver = createScheduleUpstreamTokenProviderResolver(
       params.req,
       dependencies.resolveUpstreamTokenProvider,
@@ -1884,7 +1886,7 @@ function createInitializeClient(dependencies = {}) {
       params.scheduledTokenContext,
     );
     return initializeClientWithProvider({ ...params, upstreamTokenProviderResolver });
-  };
+  }, initializeTingNative);
 }
 
 const initializeClient = createInitializeClient();

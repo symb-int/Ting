@@ -25,6 +25,7 @@ import { useGetMessagesByConvoId } from '~/data-provider';
 import Footer, { useConfiguredFooter } from './Footer';
 import { AskAnswerHostProvider } from './ask/state';
 import MessagesView from './Messages/MessagesView';
+import TingCatalog from '~/ting/chat/Catalog';
 import Presentation from './Presentation';
 import ChatForm from './Input/ChatForm';
 import { TraceSurface } from './Trace';
@@ -198,6 +199,7 @@ function ChatView({ index = 0, project }: { index?: number; project?: TChatProje
                         </div>
                         {configuredFooter && <Footer configuredOnly />}
                       </div>
+                      {isLandingPage && <TingCatalog />}
                     </div>
                   </>
                 </TraceSurface>

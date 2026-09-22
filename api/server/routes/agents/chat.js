@@ -10,6 +10,8 @@ const {
   GenerationJobManager,
   getSafeErrorMetadata,
   createTingModelGuard,
+  createTingAdmission,
+  withTingEndpointOptions,
 } = require('@librechat/api');
 const { PermissionTypes, Permissions, PermissionBits } = require('librechat-data-provider');
 const {
@@ -24,7 +26,7 @@ const guardSubagentThreadTurn = require('~/server/middleware/validate/subagentTh
 const AgentController = require('~/server/controllers/agents/request');
 const ResumeController = require('~/server/controllers/agents/resume');
 const addTitle = require('~/server/services/Endpoints/agents/title');
-const { getFiles, getRoleByName } = require('~/models');
+const { getFiles, getRoleByName, getMessages, listPublishedTingProcedures } = require('~/models');
 
 const router = express.Router();
 const requireTingModel = createTingModelGuard({
@@ -88,8 +90,9 @@ router.use(checkAgentAccess);
 router.use(checkAgentResourceAccess);
 router.use(validateConvoAccess);
 router.use(guardSubagentThreadTurn);
+router.use(createTingAdmission({ getMessages, listPublishedTingProcedures }));
 router.use(requireTingModel);
-router.use(buildEndpointOption);
+router.use(withTingEndpointOptions(buildEndpointOption));
 
 const controller = async (req, res, next) => {
   await AgentController(req, res, next, initializeClient, addTitle);

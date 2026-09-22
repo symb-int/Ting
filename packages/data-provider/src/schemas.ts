@@ -8,6 +8,7 @@ import { CODE_ENVIRONMENT_MODES, CODE_WORKSPACE_ID_PATTERN } from './code/worksp
 import { userSubmittedMessageFieldPathSchema } from './filters';
 import { TFeedback, feedbackSchema } from './feedback';
 import { CODE_APPROVAL_MODES } from './code/approval';
+import { tingIntakeSchema } from './ting';
 import { Tools } from './types/tools';
 
 export const isUUID = z.string().uuid();
@@ -927,6 +928,7 @@ export const tMessageSchema = z.object({
   feedback: feedbackSchema.optional(),
   /** metadata */
   metadata: z.record(z.unknown()).optional(),
+  tingIntake: tingIntakeSchema.omit({ audit: true, operation: true }).optional(),
   /** Output tokens for assistant messages, calibrated prompt-side estimate for user messages */
   tokenCount: z.number().optional(),
   contextMeta: z

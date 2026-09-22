@@ -84,6 +84,24 @@ describe('loadSummarizationConfig', () => {
   });
 });
 
+describe('TING configuration', () => {
+  it('materializes optional model limits for a minimal YAML configuration', async () => {
+    const app = await AppService({ config: { ting: { matcher: { implementation: 'llm' } } } });
+    expect(app.ting?.model).toEqual({
+      timeoutMs: 60_000,
+      maxInputTokens: 16_384,
+      maxOutputTokens: 2_048,
+    });
+    expect(app.ting?.procedures.pageSize).toBe(25);
+    expect(app.modelSpecs).toBeUndefined();
+  });
+
+  it('leaves the native application unchanged when TING is not configured', async () => {
+    const app = await AppService({ config: {} });
+    expect(app.ting).toBeUndefined();
+  });
+});
+
 describe('loadFiltersConfig', () => {
   it('treats omission and zero-rule source configs as disabled', () => {
     expect(loadFiltersConfig({})).toBeUndefined();

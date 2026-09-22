@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+import { tingIntakeSchema } from 'librechat-data-provider';
 import type { IMessage } from '~/types/message';
 import { agentFadingContextDefinition } from './fading';
 
@@ -149,6 +150,18 @@ const messageSchema: Schema<IMessage> = new Schema(
       type: String,
     },
     metadata: { type: mongoose.Schema.Types.Mixed },
+    tingIntake: {
+      type: mongoose.Schema.Types.Mixed,
+      default: undefined,
+      set: (value: IMessage['tingIntake']) =>
+        value == null ? undefined : tingIntakeSchema.parse(value),
+    },
+    tingOperation: {
+      type: mongoose.Schema.Types.Mixed,
+      default: undefined,
+      set: (value: IMessage['tingOperation']) =>
+        value == null ? undefined : tingIntakeSchema.shape.operation.parse(value),
+    },
     subagentTranscript: {
       type: {
         taskId: { type: String, required: true },

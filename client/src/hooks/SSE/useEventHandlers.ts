@@ -924,7 +924,9 @@ export default function useEventHandlers({
               [QueryKeys.messages, currentConvoId],
               abortMessages,
             );
-            setDraft({ id: currentConvoId, value: requestMessage?.text });
+            if (submission.tingAction == null) {
+              setDraft({ id: currentConvoId, value: requestMessage?.text });
+            }
             restorePendingQuotes(currentConvoId, requestMessage?.quotes);
             return;
           }
@@ -936,10 +938,12 @@ export default function useEventHandlers({
           }
           setMessages([]);
           queryClient.setQueryData<TMessage[]>([QueryKeys.messages, Constants.NEW_CONVO], []);
-          setDraft({
-            id: getConversationDraftId(runIndex, Constants.NEW_CONVO),
-            value: requestMessage?.text,
-          });
+          if (submission.tingAction == null) {
+            setDraft({
+              id: getConversationDraftId(runIndex, Constants.NEW_CONVO),
+              value: requestMessage?.text,
+            });
+          }
           restorePendingQuotes(String(Constants.NEW_CONVO), requestMessage?.quotes);
           if (location.pathname !== `/c/${Constants.NEW_CONVO}`) {
             navigate(`/c/${Constants.NEW_CONVO}`, { replace: true });
@@ -1004,10 +1008,12 @@ export default function useEventHandlers({
             currentConvoId === Constants.NEW_CONVO;
 
           setFinalMessages(currentConvoId, isNewChat ? [] : [...messages]);
-          setDraft({
-            id: getConversationDraftId(runIndex, currentConvoId),
-            value: requestMessage?.text,
-          });
+          if (submission.tingAction == null) {
+            setDraft({
+              id: getConversationDraftId(runIndex, currentConvoId),
+              value: requestMessage?.text,
+            });
+          }
           restorePendingQuotes(currentConvoId, requestMessage?.quotes);
           if (isNewChat) {
             requestChatFocus();

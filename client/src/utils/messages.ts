@@ -834,6 +834,7 @@ export function areMessageFieldsEqual(
     prevMsg.isCreatedByUser === nextMsg.isCreatedByUser &&
     (prevMsg.children?.length ?? 0) === (nextMsg.children?.length ?? 0) &&
     prevMsg.content === nextMsg.content &&
+    prevMsg.tingIntake === nextMsg.tingIntake &&
     prevMsg.model === nextMsg.model &&
     prevMsg.endpoint === nextMsg.endpoint &&
     prevMsg.iconURL === nextMsg.iconURL &&

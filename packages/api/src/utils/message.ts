@@ -13,7 +13,11 @@ type GetMessagesByParentId = (
 const FILE_STRIP_FIELDS = ['text', '_id', '__v'] as const;
 
 /** Fields to strip from messages before client transmission */
-const MESSAGE_STRIP_FIELDS = ['fileContext'] as const;
+const MESSAGE_STRIP_FIELDS = ['fileContext', 'contextMeta', 'tingOperation'] as const;
+
+type ClientMessage<T> = Omit<T, (typeof MESSAGE_STRIP_FIELDS)[number] | 'tingIntake'> & {
+  tingIntake?: TMessage['tingIntake'];
+};
 
 /**
  * Strips large/unnecessary fields from a file object before transmitting to client.
@@ -77,9 +81,9 @@ export function buildMessageFiles<T extends Partial<TFile>>(
  */
 export function sanitizeMessageForTransmit<T extends Partial<TMessage>>(
   message: T,
-): Omit<T, (typeof MESSAGE_STRIP_FIELDS)[number]> {
+): ClientMessage<T> {
   if (!message) {
-    return message as Omit<T, (typeof MESSAGE_STRIP_FIELDS)[number]>;
+    return message as ClientMessage<T>;
   }
 
   const sanitized = { ...message };
@@ -89,12 +93,17 @@ export function sanitizeMessageForTransmit<T extends Partial<TMessage>>(
     delete sanitized[field as keyof typeof sanitized];
   }
 
+  if (sanitized.tingIntake) {
+    const { schemaVersion, state, actions } = sanitized.tingIntake;
+    sanitized.tingIntake = { schemaVersion, state, actions };
+  }
+
   // Always create a new array when files exist to maintain full immutability
   if (Array.isArray(sanitized.files)) {
     sanitized.files = sanitized.files.map((file) => sanitizeFileForTransmit(file));
   }
 
-  return sanitized;
+  return sanitized as ClientMessage<T>;
 }
 
 export function isPreliminaryMessageId(messageId: unknown): messageId is string {

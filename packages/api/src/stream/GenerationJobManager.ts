@@ -90,7 +90,8 @@ import { filterPersistableAbortContent } from './abortContent';
 import { toClientPendingAction } from '~/agents/hitl/policy';
 import { ApprovalLifecycle, pausePersistenceActionId } from './ApprovalLifecycle';
 import { projectPendingMCPOAuthPrompts } from '~/mcp/oauth/resume';
-import { sanitizeJobMetadata } from './metadata';
+import { sanitizeJobMetadata, sanitizeJobUserMessage } from './metadata';
+import { sanitizeMessageForTransmit } from '~/utils/message';
 
 /** Terminal error surfaced to a client still attached when its approval window lapses. */
 const APPROVAL_EXPIRED_ERROR = 'Approval expired before a decision was made';
@@ -5264,7 +5265,7 @@ class GenerationJobManagerClass {
           const fallbackCreatedEvent: t.ServerSentEvent = {
             created: true,
             message: {
-              ...jobData.userMessage,
+              ...sanitizeJobUserMessage(jobData.userMessage),
               sender: 'User',
               isCreatedByUser: true,
             },
@@ -5698,7 +5699,7 @@ class GenerationJobManagerClass {
             const fallbackCreatedEvent: t.ServerSentEvent = {
               created: true,
               message: {
-                ...jobData.userMessage,
+                ...sanitizeJobUserMessage(jobData.userMessage),
                 sender: 'User',
                 isCreatedByUser: true,
               },
@@ -6626,7 +6627,9 @@ class GenerationJobManagerClass {
       snapshotReadySignaled = true;
       signalSnapshotReady();
     };
-    runtime.inFlightSnapshotEmissions.set(sequence, { event, snapshotReady });
+    const publicEvent =
+      'created' in event ? { ...event, message: sanitizeMessageForTransmit(event.message) } : event;
+    runtime.inFlightSnapshotEmissions.set(sequence, { event: publicEvent, snapshotReady });
 
     try {
       const isCreatedEvent = 'created' in event;
@@ -6671,7 +6674,7 @@ class GenerationJobManagerClass {
       }
     } finally {
       markSnapshotReady();
-      if (runtime.inFlightSnapshotEmissions.get(sequence)?.event === event) {
+      if (runtime.inFlightSnapshotEmissions.get(sequence)?.event === publicEvent) {
         runtime.inFlightSnapshotEmissions.delete(sequence);
       }
     }
@@ -6708,6 +6711,10 @@ class GenerationJobManagerClass {
       }
     }
     markSnapshotReady();
+
+    if ('created' in event) {
+      event = { ...event, message: sanitizeMessageForTransmit(event.message) };
+    }
 
     // Retain run-step identity independently of the live graph. Paused in-memory
     // runs release that graph before a later request rebuilds the run, but the
@@ -7797,6 +7804,7 @@ class GenerationJobManagerClass {
       manualSkills?: string[];
       alwaysAppliedSkills?: string[];
       files?: unknown[];
+      tingOperation?: NonNullable<SerializableJobData['userMessage']>['tingOperation'];
     };
     const updates: Partial<SerializableJobData> = {
       createdEventEmitted: true,
@@ -7806,6 +7814,7 @@ class GenerationJobManagerClass {
         conversationId: message.conversationId,
         text: message.text,
         quotes: message.quotes,
+        ...(extra.tingOperation != null && { tingOperation: extra.tingOperation }),
         // Persist the turn's uploaded files so a HITL resume sources them from the job
         // (this authoritative writer), not a user DB row whose save can still be racing
         // the approval prompt.
@@ -8679,7 +8688,7 @@ class GenerationJobManagerClass {
     return {
       runSteps: effectiveRunSteps,
       aggregatedContent,
-      userMessage: jobData.userMessage,
+      userMessage: jobData.userMessage ? sanitizeJobUserMessage(jobData.userMessage) : undefined,
       responseMessageId: jobData.responseMessageId,
       isRegenerate: jobData.isRegenerate,
       conversationId: jobData.conversationId,

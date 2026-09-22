@@ -8,6 +8,7 @@ import {
   TwoFactorScreen,
   RequestPasswordReset,
 } from '~/components/Auth';
+import { WorkshopRoute, ProcedureList, ProcedureEditor, NewProcedure } from '~/ting/workshop';
 import { MarketplaceProvider } from '~/components/Agents/MarketplaceContext';
 import AgentMarketplace from '~/components/Agents/Marketplace';
 import { OAuthSuccess, OAuthError } from '~/components/OAuth';
@@ -114,6 +115,15 @@ export const router = createBrowserRouter(
           ],
         },
         dashboardRoutes,
+        {
+          path: 'werkstatt/verfahren',
+          element: <WorkshopRoute />,
+          children: [
+            { index: true, element: <ProcedureList /> },
+            { path: 'neu', element: <NewProcedure /> },
+            { path: ':procedureId', element: <ProcedureEditor /> },
+          ],
+        },
         {
           path: '/',
           element: <Root />,

@@ -2,6 +2,7 @@ import type {
   TFeedbackRating,
   TFeedbackTag,
   UserSubmittedMessageFieldPath,
+  TingIntake,
 } from 'librechat-data-provider';
 import type { Document } from 'mongoose';
 import type { IAgentEventActorContextMeta } from './convo';
@@ -92,6 +93,10 @@ export interface IMessage extends Document {
   iconURL?: string;
   addedConvo?: boolean;
   metadata?: Record<string, unknown>;
+  /** Validated server-authored routing state; audit stays server-side. */
+  tingIntake?: TingIntake;
+  /** Server-authored action receipt used to retry a user turn safely. */
+  tingOperation?: NonNullable<TingIntake['operation']>;
   /** Server-private canonical message delta for durable subagent-thread continuation. */
   subagentTranscript?: {
     taskId: string;

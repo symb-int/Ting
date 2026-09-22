@@ -25,6 +25,7 @@ import MessageIcon from '~/components/Chat/Messages/MessageIcon';
 import { TingStatus, useTingChatCapabilityGuard } from '~/ting';
 import { showThinkingAtom } from '~/store/showThinking';
 import SubRow from '~/components/Chat/Messages/SubRow';
+import TingReplies from '~/ting/chat/Replies';
 import store from '~/store';
 
 type ContentRenderProps = {
@@ -254,6 +255,9 @@ const ContentRender = memo(function ContentRender({
           <TingStatus className="ting-message-capability-status" variant="error" role="alert">
             {localize('com_ting_response_error')}
           </TingStatus>
+        )}
+        {!edit && isLatestMessage && !!msg.tingIntake?.actions.length && (
+          <TingReplies message={msg} latestMessageId={latestMessageId} />
         )}
       </ErrorSourceProvider>
       {/** A turn that ran out of agent steps is incomplete, not broken. Rendered

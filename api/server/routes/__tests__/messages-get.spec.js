@@ -54,6 +54,8 @@ jest.mock('@librechat/api', () => {
     /** The real helper, without loading the rest of the package this suite mocks around. */
     withoutTraceRefs: jest.requireActual('../../../../packages/api/src/langfuse/trace.ts')
       .withoutTraceRefs,
+    sanitizeMessageForTransmit: jest.requireActual('../../../../packages/api/src/utils/message.ts')
+      .sanitizeMessageForTransmit,
     createContentFilter: jest.fn(() => (req, res, next) => next()),
     inspectContent,
     extractChatContent,
@@ -633,13 +635,21 @@ describe('message route conversation ownership filters', () => {
     },
   );
 
-  it('strips server-private context meta from hydrated search hits', async () => {
+  it('strips server-private context and TING audit metadata from hydrated search hits', async () => {
     searchMessages.mockResolvedValue({
       hits: [
         {
           messageId: 'hit-1',
           conversationId: 'convo-1',
           text: 'needle in a haystack',
+          tingOperation: { requestId: 'private' },
+          tingIntake: {
+            schemaVersion: 'ting.intake.v1',
+            state: { concerns: [], focusConcernId: null },
+            actions: [],
+            audit: { private: true },
+            operation: { requestId: 'private' },
+          },
           contextMeta: {
             calibrationRatio: 1.2,
             encoding: 'claude',
@@ -661,6 +671,12 @@ describe('message route conversation ownership filters', () => {
     expect(response.body.messages).toHaveLength(1);
     expect(response.body.messages[0]).toMatchObject({ messageId: 'hit-1', title: 'Found' });
     expect(response.body.messages[0]).not.toHaveProperty('contextMeta');
+    expect(response.body.messages[0]).not.toHaveProperty('tingOperation');
+    expect(response.body.messages[0].tingIntake).toEqual({
+      schemaVersion: 'ting.intake.v1',
+      state: { concerns: [], focusConcernId: null },
+      actions: [],
+    });
   });
 
   it('returns indistinguishable not-found responses for child and missing query reads', async () => {

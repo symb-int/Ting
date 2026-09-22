@@ -126,7 +126,11 @@ const conversation = (conversationId: string) =>
 function renderAsk(
   messages: TMessage[] | undefined,
   conversationId = 'conversation-1',
-  options: { endpoint?: TConversation['endpoint']; isSubmitting?: boolean } = {},
+  options: {
+    endpoint?: TConversation['endpoint'];
+    model?: TConversation['model'];
+    isSubmitting?: boolean;
+  } = {},
 ) {
   const setMessages = jest.fn();
   const setSubmission = jest.fn();
@@ -134,6 +138,9 @@ function renderAsk(
   const immutableConversation = conversation(conversationId);
   if ('endpoint' in options) {
     immutableConversation.endpoint = options.endpoint ?? null;
+  }
+  if ('model' in options) {
+    immutableConversation.model = options.model;
   }
   const hook = renderHook(() =>
     useChatFunctions({
@@ -155,6 +162,31 @@ describe('useChatFunctions ask', () => {
     mockGetQueryData.mockReturnValue({});
     mockGetLatestConversation.mockReturnValue(null);
     mockResolveCodeWorkspaceSubmission.mockReturnValue({});
+  });
+
+  it('uses native chat transport for a catalogue selection with no model configured', () => {
+    const { result, setSubmission } = renderAsk([], Constants.NEW_CONVO, {
+      endpoint: null,
+      model: undefined,
+    });
+    const tingAction = {
+      type: 'select_procedure' as const,
+      procedureId: 'procedure-1',
+      revisionId: 'revision-1',
+      requestId: '068c16e9-141c-4ddf-b42a-63280323bb12',
+    };
+    act(() => {
+      result.current.ask(
+        { text: 'Start procedure' },
+        { tingAction, overrideFiles: [], overrideQuotes: [], overrideManualSkills: [] },
+      );
+    });
+    const submission = setSubmission.mock.calls.at(-1)?.[0] as TSubmission;
+    const { server, payload } = createPayload(submission);
+    expect(server).toContain('/api/agents/chat/openAI');
+    expect(payload.tingAction).toEqual(tingAction);
+    expect(payload.model).toBeUndefined();
+    expect(submission.userMessage.files).toBeUndefined();
   });
 
   it('reads an approval-mode selection made immediately before send', () => {

@@ -11,8 +11,9 @@ E2E_CHROMIUM_CHANNEL=chrome npm run lighthouse:run
 E2E_CHROMIUM_CHANNEL=chrome npm run lighthouse:regression
 ```
 
-`E2E_BASE_URL=http://localhost:3098` selects another local port. Set `CHROME_PATH` if
-chrome-launcher picks the wrong browser — on WSL it prefers the Windows install, whose
+`E2E_BASE_URL=http://localhost:3098` selects another local port. Set `CHROME_PATH` to
+choose the executable for both Playwright authentication and Lighthouse; without it,
+chrome-launcher may pick the wrong browser — on WSL it prefers the Windows install, whose
 debugging port is unreachable from Linux — and `LIGHTHOUSE_CHROME_FLAGS` to append Chrome
 flags such as `--no-sandbox`. Each run starts a disposable MongoDB and the real Express
 server, registers a local user, and seeds a conversation. No model inference is needed.

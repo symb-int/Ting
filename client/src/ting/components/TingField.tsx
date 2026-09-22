@@ -1,15 +1,23 @@
 import React from 'react';
-import { Input, SecretInput, cn } from '@librechat/client';
+import { Input, SecretInput, Textarea, cn } from '@librechat/client';
 import type { InputProps, SecretInputProps } from '@librechat/client';
 
 const inputClasses =
   'ting-input ting-control h-auto min-h-10 w-full rounded-[2px] border-border-medium bg-surface-primary px-3 py-2 text-sm leading-5 text-text-primary placeholder:text-text-tertiary aria-[invalid=true]:border-status-error focus:border-accent-primary focus-visible:border-accent-primary focus-visible:ring-0';
 
-export type TingInputProps = InputProps;
+export interface TingInputProps extends InputProps {
+  appearance?: 'default' | 'workshop';
+}
+
+const workshopClasses = 'min-h-[38px] rounded-[5px]';
 
 export const TingInput = React.forwardRef<HTMLInputElement, TingInputProps>(
-  ({ className, ...props }, ref) => (
-    <Input ref={ref} className={cn(inputClasses, className)} {...props} />
+  ({ appearance = 'default', className, ...props }, ref) => (
+    <Input
+      ref={ref}
+      className={cn(inputClasses, appearance === 'workshop' && workshopClasses, className)}
+      {...props}
+    />
   ),
 );
 
@@ -51,7 +59,20 @@ export interface TingFieldProps
 }
 
 const TingField = React.forwardRef<HTMLInputElement, TingFieldProps>(
-  ({ className, error, hideSecretLabel, id, label, showSecretLabel, type, ...props }, ref) => {
+  (
+    {
+      appearance = 'default',
+      className,
+      error,
+      hideSecretLabel,
+      id,
+      label,
+      showSecretLabel,
+      type,
+      ...props
+    },
+    ref,
+  ) => {
     const errorId = `${id}-error`;
     const fieldProps = {
       ...props,
@@ -63,7 +84,13 @@ const TingField = React.forwardRef<HTMLInputElement, TingFieldProps>(
 
     return (
       <div className="ting-field flex flex-col">
-        <label htmlFor={id} className="mb-[6px] text-sm font-bold leading-[1.45] text-text-primary">
+        <label
+          htmlFor={id}
+          className={cn(
+            'text-sm font-bold leading-[1.45] text-text-primary',
+            appearance === 'workshop' ? 'mb-3' : 'mb-[6px]',
+          )}
+        >
           {label}
         </label>
         {type === 'password' ? (
@@ -74,7 +101,7 @@ const TingField = React.forwardRef<HTMLInputElement, TingFieldProps>(
             {...fieldProps}
           />
         ) : (
-          <TingInput ref={ref} type={type} {...fieldProps} />
+          <TingInput ref={ref} type={type} appearance={appearance} {...fieldProps} />
         )}
         {error != null && (
           <span id={errorId} role="alert" className="mt-1 text-sm leading-[1.45] text-status-error">
@@ -87,5 +114,69 @@ const TingField = React.forwardRef<HTMLInputElement, TingFieldProps>(
 );
 
 TingField.displayName = 'TingField';
+
+export interface TingTextareaFieldProps
+  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'id'> {
+  id: string;
+  label: React.ReactNode;
+  description?: React.ReactNode;
+  error?: React.ReactNode;
+  appearance?: 'default' | 'workshop';
+}
+
+export const TingTextareaField = React.forwardRef<HTMLTextAreaElement, TingTextareaFieldProps>(
+  ({ appearance = 'default', className, description, error, id, label, ...props }, ref) => (
+    <div className="ting-field flex min-w-0 flex-col">
+      <label
+        htmlFor={id}
+        className={cn(
+          'text-sm font-bold leading-[1.45] text-text-primary',
+          appearance === 'workshop' ? 'mb-3' : 'mb-[6px]',
+        )}
+      >
+        {label}
+      </label>
+      <Textarea
+        ref={ref}
+        id={id}
+        className={cn(
+          inputClasses,
+          appearance === 'workshop' && [workshopClasses, 'leading-[1.5]'],
+          'min-h-20 resize-y',
+          className,
+        )}
+        aria-describedby={
+          [description != null ? `${id}-help` : '', error != null ? `${id}-error` : '']
+            .filter(Boolean)
+            .join(' ') || undefined
+        }
+        aria-invalid={error != null || undefined}
+        {...props}
+      />
+      {description != null && (
+        <p
+          id={`${id}-help`}
+          className={cn(
+            'text-[13px] leading-[1.45] text-text-secondary',
+            appearance === 'workshop' ? 'mt-3' : 'mt-[6px]',
+          )}
+        >
+          {description}
+        </p>
+      )}
+      {error != null && (
+        <span
+          id={`${id}-error`}
+          role="alert"
+          className="mt-1 text-sm leading-[1.45] text-status-error"
+        >
+          {error}
+        </span>
+      )}
+    </div>
+  ),
+);
+
+TingTextareaField.displayName = 'TingTextareaField';
 
 export default TingField;

@@ -28,6 +28,7 @@ export const SystemCapabilities = {
   READ_INSIGHTS: 'read:insights',
   READ_AGENTS: 'read:agents',
   MANAGE_AGENTS: 'manage:agents',
+  MANAGE_PROCEDURES: 'manage:procedures',
   MANAGE_MCP_SERVERS: 'manage:mcpservers',
   /** Enrolls and revokes deployment-owned Code API workers. */
   MANAGE_CODE_ENVIRONMENTS: 'manage:code_environments',

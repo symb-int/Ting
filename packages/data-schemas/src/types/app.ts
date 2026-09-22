@@ -4,6 +4,7 @@ import type {
   TFileConfig,
   TAzureConfig,
   TCustomConfig,
+  TingConfig,
   TMemoryConfig,
   EModelEndpoint,
   TVertexAIConfig,
@@ -49,6 +50,8 @@ export interface FunctionTool {
 export interface AppConfig {
   /** The main custom configuration */
   config: Partial<TCustomConfig>;
+  /** TING procedure catalog and intake model configuration. */
+  ting?: TingConfig;
   /** OCR configuration */
   ocr?: TCustomConfig['ocr'];
   /** File paths configuration */

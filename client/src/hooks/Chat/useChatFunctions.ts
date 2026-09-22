@@ -307,6 +307,7 @@ export default function useChatFunctions({
       overrideRecoverySteerId,
       overrideExpectedPredecessorCreatedAt,
       overrideQueuedMessageOrigin,
+      tingAction,
     } = {},
   ) => {
     text = text.trim();
@@ -349,8 +350,13 @@ export default function useChatFunctions({
     }
     const { codeEnvironmentMode, codeWorkspaces } = workspaceSubmission;
 
-    const endpoint = conversation?.endpoint;
-    if (endpoint === null) {
+    // A catalogue selection is a native chat action with no model invocation.
+    // The OpenAI endpoint is the existing transport to /api/agents/chat/openAI;
+    // the server validates and resolves the selected published revision.
+    const isProcedureSelection = tingAction?.type === 'select_procedure';
+    const endpoint =
+      conversation?.endpoint ?? (isProcedureSelection ? EModelEndpoint.openAI : null);
+    if (endpoint == null) {
       console.error('No endpoint available');
       return false;
     }
@@ -524,12 +530,14 @@ export default function useChatFunctions({
     const defaultParamsEndpoint = getDefaultParamsEndpoint(endpointsConfig, endpoint);
 
     /** This becomes part of the `endpointOption` */
-    const convo = parseCompactConvo({
-      endpoint: endpoint as EndpointSchemaKey,
-      endpointType: endpointType as EndpointSchemaKey,
-      conversation: conversationForPayload,
-      defaultParamsEndpoint,
-    });
+    const convo = isProcedureSelection
+      ? { ...conversationForPayload, endpoint, model: undefined }
+      : parseCompactConvo({
+          endpoint: endpoint as EndpointSchemaKey,
+          endpointType: endpointType as EndpointSchemaKey,
+          conversation: conversationForPayload,
+          defaultParamsEndpoint,
+        });
 
     const { modelDisplayLabel } = endpointsConfig?.[endpoint ?? ''] ?? {};
     const endpointOption = Object.assign(
@@ -775,6 +783,7 @@ export default function useChatFunctions({
       recoverySteerId: overrideRecoverySteerId,
       expectedPredecessorCreatedAt: overrideExpectedPredecessorCreatedAt,
       queuedMessageOrigin: overrideQueuedMessageOrigin,
+      tingAction,
     };
 
     if (regenerateShaped) {

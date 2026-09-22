@@ -2,7 +2,7 @@
 
 import dotenv from 'dotenv';
 import yaml from 'js-yaml';
-import { configSchema } from 'librechat-data-provider';
+import { configSchema, tingConfigSchema } from 'librechat-data-provider';
 import { randomBytes as createRandomBytes } from 'node:crypto';
 import { chmod, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -41,6 +41,7 @@ const ENVIRONMENT_DEFAULTS = [
   ['ALLOW_SHARED_LINKS_PUBLIC', 'false'],
   ['OPENAI_API_KEY', ''],
   ['OPENAI_MODELS', ''],
+  ['TING_MATCHER_IMPLEMENTATION', 'llm'],
 ];
 
 const SECRET_SIZES = [
@@ -136,6 +137,9 @@ export function createLibreChatConfig(environment) {
   const config = {
     version: CONFIG_VERSION,
     cache: true,
+    ting: tingConfigSchema.parse({
+      matcher: { implementation: environment.TING_MATCHER_IMPLEMENTATION || undefined },
+    }),
     interface: {
       modelSelect: false,
       parameters: false,

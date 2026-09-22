@@ -56,6 +56,30 @@ describe('sanitizeFileForTransmit', () => {
 });
 
 describe('sanitizeMessageForTransmit', () => {
+  it('keeps routing state and actions while removing internal audit and replay receipts', () => {
+    const message = {
+      messageId: 'ting-response',
+      tingOperation: { requestId: 'private-operation' },
+      tingIntake: {
+        schemaVersion: 'ting.intake.v1' as const,
+        state: { concerns: [], focusConcernId: null },
+        actions: [{ id: 'a', type: 'reply' as const, label: 'Ja', text: 'Ja' }],
+        audit: { internalResult: 'private-model-output' },
+        operation: { requestId: 'private-operation' },
+      },
+    };
+
+    const result = sanitizeMessageForTransmit(message);
+    expect(result.tingIntake).toEqual({
+      schemaVersion: message.tingIntake.schemaVersion,
+      state: message.tingIntake.state,
+      actions: message.tingIntake.actions,
+    });
+    expect(result).not.toHaveProperty('tingOperation');
+    expect(message.tingIntake.audit.internalResult).toBe('private-model-output');
+    expect(message).toHaveProperty('tingOperation');
+  });
+
   it('should remove fileContext from message', () => {
     const message = {
       messageId: 'msg-123',

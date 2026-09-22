@@ -1,5 +1,12 @@
-import type { JobMetadataPatch } from './interfaces/IJobStore';
+import type { JobMetadataPatch, SerializableJobData } from './interfaces/IJobStore';
 import type { GenerationJobMetadata } from '~/types';
+
+export function sanitizeJobUserMessage(
+  message: NonNullable<SerializableJobData['userMessage']>,
+): Omit<NonNullable<SerializableJobData['userMessage']>, 'tingOperation'> {
+  const { tingOperation: _tingOperation, ...visible } = message;
+  return visible;
+}
 
 export function sanitizeJobMetadata(metadata: Partial<GenerationJobMetadata>): JobMetadataPatch {
   const patch: JobMetadataPatch = {};

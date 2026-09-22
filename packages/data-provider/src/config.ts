@@ -2860,8 +2860,32 @@ export const openIdDiscoverySchema = z.object({
 
 export type TOpenIdDiscoveryConfig = z.infer<typeof openIdDiscoverySchema>;
 
+export const tingConfigSchema = z
+  .object({
+    matcher: z
+      .object({ implementation: z.string().min(1).default('llm') })
+      .strict()
+      .default({}),
+    model: z
+      .object({
+        timeoutMs: z.number().int().positive().default(60_000),
+        maxInputTokens: z.number().int().positive().default(16_384),
+        maxOutputTokens: z.number().int().positive().default(2_048),
+      })
+      .strict()
+      .default({}),
+    procedures: z
+      .object({ pageSize: z.number().int().min(1).max(100).default(25) })
+      .strict()
+      .default({}),
+  })
+  .strict();
+
+export type TingConfig = z.infer<typeof tingConfigSchema>;
+
 export const configSchema = z.object({
   version: z.string(),
+  ting: tingConfigSchema.optional(),
   cache: z.boolean().default(true),
   ocr: ocrSchema.optional(),
   webSearch: webSearchSchema.optional(),

@@ -17,6 +17,8 @@ const {
   filterPersistableAbortContent,
   decrementPendingRequest,
   sanitizeMessageForTransmit,
+  tingUserMessage,
+  isTingAdmittedAction,
   checkAndIncrementPendingRequest,
   exemptFromConcurrencyLimiter,
   isScheduleFireRequest,
@@ -365,7 +367,7 @@ async function saveErrorTurn(
     if (
       isContinued ||
       editedContent != null ||
-      (responseMessageId && !isRegenerate) ||
+      (responseMessageId && !isRegenerate && !isTingAdmittedAction(req)) ||
       req.body?.recoverySteerId != null ||
       req.body?.clientRequestId?.startsWith?.('steer-recovery:') === true
     ) {
@@ -407,12 +409,22 @@ async function saveErrorTurn(
                   alwaysAppliedSkills: req.body.alwaysAppliedSkills,
                 }),
             }
-          : getPreliminaryUserMessage(req.body, conversationId, req._agentEventTriggerProjection);
+          : tingUserMessage(
+              req,
+              getPreliminaryUserMessage(req.body, conversationId, req._agentEventTriggerProjection),
+            );
       if (!userMessage) {
         return;
       }
       errorMessageId = getPreliminaryResponseMessageId(
-        liveUserMessage != null ? { messageId: liveUserMessage.messageId } : req.body,
+        liveUserMessage != null
+          ? {
+              messageId: liveUserMessage.messageId,
+              ...(isTingAdmittedAction(req) && {
+                responseMessageId: req.body.responseMessageId,
+              }),
+            }
+          : req.body,
       );
       errorParentMessageId = userMessage.messageId;
     }
@@ -1581,10 +1593,13 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
     const responseModel = getAgentResponseModel(req, endpointOption);
     const preliminaryUserMessage = isCompaction
       ? projectCompactionAnchor({ messageId: parentMessageId, conversationId })
-      : getPreliminaryUserMessage(
-          { ...req.body, messageId: preallocatedUserMessageId },
-          conversationId,
-          req._agentEventTriggerProjection,
+      : tingUserMessage(
+          req,
+          getPreliminaryUserMessage(
+            { ...req.body, messageId: preallocatedUserMessageId },
+            conversationId,
+            req._agentEventTriggerProjection,
+          ),
         );
     const job = await GenerationJobManager.createJob(streamId, userId, conversationId, {
       startupTelemetry,
@@ -2266,7 +2281,7 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
             streamId,
             {
               responseMessageId: respMsgId,
-              userMessage: {
+              userMessage: tingUserMessage(req, {
                 messageId: userMsg.messageId,
                 parentMessageId: userMsg.parentMessageId,
                 conversationId: userMsg.conversationId,
@@ -2288,7 +2303,7 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
                   req.body.alwaysAppliedSkills.length > 0 && {
                     alwaysAppliedSkills: req.body.alwaysAppliedSkills,
                   }),
-              },
+              }),
             },
             jobCreatedAt,
           ).catch((err) => {
@@ -3042,7 +3057,7 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
             title: conversation.title,
             requestMessage: sanitizeMessageForTransmit(userMessage),
             responseMessage: {
-              ...response,
+              ...sanitizeMessageForTransmit(response),
               ...(responseIsUnfinished && { unfinished: true }),
               ...(stepLimitReached && {
                 finish_reason: Constants.TOOL_CALL_LIMIT_FINISH_REASON,

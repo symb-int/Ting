@@ -6,6 +6,7 @@ import {
   getConfigDefaults,
   langfuseConfigSchema,
   skillSyncConfigSchema,
+  tingConfigSchema,
   summarizationConfigSchema,
 } from 'librechat-data-provider';
 import type {
@@ -235,6 +236,7 @@ export const AppService = async (params?: {
 
   const appConfig: AppConfig = {
     ...defaultConfig,
+    ting: config.ting == null ? undefined : tingConfigSchema.parse(config.ting),
     fileConfig: config?.fileConfig as AppConfig['fileConfig'],
     modelSpecs: processModelSpecs(config?.endpoints, config.modelSpecs, interfaceConfig),
     endpoints: loadedEndpoints,

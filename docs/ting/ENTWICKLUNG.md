@@ -2,7 +2,7 @@
 
 ## Voraussetzungen
 
-TING I01 verwendet die im Repository festgeschriebenen Versionen:
+TING verwendet die im Repository festgeschriebenen Versionen:
 
 - Git
 - Node.js 24.16.0 (`.nvmrc`)
@@ -63,7 +63,11 @@ docker compose -f compose.ting.yaml up -d --build
 
 Der Docker-Build baut die gemeinsamen Pakete und die Oberfläche aus den neuen Quellen.
 Vorhandene `.env`, Konten, Chats und Profilbilder bleiben erhalten. Für diese
-Designkorrekturen ist keine Datenmigration und keine erneute Einrichtung nötig.
+Aktualisierung ist keine manuelle Datenmigration und keine erneute Einrichtung nötig.
+
+Die Verfahrenswerkstatt und die Anliegenklärung sind in [I02-VERFAHREN.md](I02-VERFAHREN.md)
+beschrieben. Der Zugriff auf die Werkstatt wird einem bestehenden Konto über die native
+Berechtigung `manage:procedures` erteilt.
 
 ## Frontend mit Hot Reload
 

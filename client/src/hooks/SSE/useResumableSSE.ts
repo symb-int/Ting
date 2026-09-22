@@ -2044,13 +2044,15 @@ export default function useResumableSSE(
               hasResponseMessage: !!data.responseMessage,
             });
             clearPendingApprovalForTerminal(finalConvoId);
-            clearComposerDrafts(runIndex, currentSubmission.conversation?.conversationId, {
-              includeNewChatDraft:
-                !currentSubmission.conversation?.conversationId ||
-                currentSubmission.conversation.conversationId === Constants.NEW_CONVO ||
-                optimisticStreamIdsRef.current.has(currentStreamId) ||
-                isInitialNewConversation(currentSubmission),
-            });
+            if (currentSubmission.tingAction == null) {
+              clearComposerDrafts(runIndex, currentSubmission.conversation?.conversationId, {
+                includeNewChatDraft:
+                  !currentSubmission.conversation?.conversationId ||
+                  currentSubmission.conversation.conversationId === Constants.NEW_CONVO ||
+                  optimisticStreamIdsRef.current.has(currentStreamId) ||
+                  isInitialNewConversation(currentSubmission),
+              });
+            }
             // A steer-applied event may still be waiting for its next-frame
             // message target when FINAL arrives. Reconcile directly from the
             // authoritative final message before converting leftovers so a
@@ -2975,13 +2977,15 @@ export default function useResumableSSE(
         removeActiveJob(currentStreamId);
         clearAttachedGenerationCreatedAt();
         clearPendingApprovalForTerminal(reconciliationConvoId);
-        clearComposerDrafts(runIndex, reconciliationConvoId, {
-          includeNewChatDraft:
-            !reconciliationConvoId ||
-            reconciliationConvoId === Constants.NEW_CONVO ||
-            optimisticStreamIdsRef.current.has(currentStreamId) ||
-            isInitialNewConversation(currentSubmission),
-        });
+        if (currentSubmission.tingAction == null) {
+          clearComposerDrafts(runIndex, reconciliationConvoId, {
+            includeNewChatDraft:
+              !reconciliationConvoId ||
+              reconciliationConvoId === Constants.NEW_CONVO ||
+              optimisticStreamIdsRef.current.has(currentStreamId) ||
+              isInitialNewConversation(currentSubmission),
+          });
+        }
         setIsSubmitting(false);
         setShowStopButton(false);
         if (event.reconcileReason === 'abort_persistence_failed') {
@@ -3074,13 +3078,15 @@ export default function useResumableSSE(
           /** Terminal: drop any in-flight live estimate so the gauge doesn't
            *  keep counting stale streamed output after the stream ends */
           resetLive({ ...currentSubmission, userMessage });
-          clearComposerDrafts(runIndex, convoId, {
-            includeNewChatDraft:
-              !convoId ||
-              convoId === Constants.NEW_CONVO ||
-              optimisticStreamIdsRef.current.has(currentStreamId) ||
-              isInitialNewConversation(currentSubmission),
-          });
+          if (currentSubmission.tingAction == null) {
+            clearComposerDrafts(runIndex, convoId, {
+              includeNewChatDraft:
+                !convoId ||
+                convoId === Constants.NEW_CONVO ||
+                optimisticStreamIdsRef.current.has(currentStreamId) ||
+                isInitialNewConversation(currentSubmission),
+            });
+          }
           clearStepMaps();
           let persistedMessages: TMessage[] | undefined;
           if (convoId) {

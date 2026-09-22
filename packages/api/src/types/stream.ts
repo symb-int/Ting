@@ -2,7 +2,7 @@ import type {
   IAgentEventActorContextMeta,
   ICompactionSemanticIndexProjection,
 } from '@librechat/data-schemas';
-import type { Agents, UserSubmittedMessageFieldPath } from 'librechat-data-provider';
+import type { Agents, UserSubmittedMessageFieldPath, TingIntake } from 'librechat-data-provider';
 import type { EventEmitter } from 'events';
 import type {
   AgentEventDetachedTerminalEvidence,
@@ -26,7 +26,9 @@ export interface GenerationJobMetadata {
   generationProtocolVersion?: 1 | 2;
   earlyBufferOverflow?: EarlyBufferOverflowState;
   /** User message data for rebuilding submission on reconnect */
-  userMessage?: Agents.UserMessageMeta;
+  userMessage?: Agents.UserMessageMeta & {
+    tingOperation?: NonNullable<TingIntake['operation']>;
+  };
   /** Response message ID for tracking */
   responseMessageId?: string;
   /** Whether this generation replaces an existing assistant branch. */

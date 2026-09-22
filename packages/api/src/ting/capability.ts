@@ -1,7 +1,8 @@
 import { ErrorTypes } from 'librechat-data-provider';
 import type { NextFunction, Request, Response } from 'express';
-
-export const TING_MODEL_SPEC_NAME = 'ting-chat';
+import { hasTingModelFreeAdmission } from './native';
+import { TING_MODEL_SPEC_NAME } from './constants';
+export { TING_MODEL_SPEC_NAME } from './constants';
 
 export type TingChatCapabilityStatus = 'configured' | 'not_configured';
 
@@ -61,6 +62,7 @@ export const resolveTingChatCapability = (
 export const createTingModelGuard =
   ({ getOpenAIApiKey }: TingModelGuardDependencies) =>
   (req: TingChatRequest, res: Response, next: NextFunction): Response | void => {
+    if (hasTingModelFreeAdmission(req)) return next();
     const capability = resolveTingChatCapability(req.config, {
       openAIApiKey: getOpenAIApiKey(),
     });

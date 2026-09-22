@@ -23,6 +23,19 @@ const MAX_SUBAGENT_CONTROL_MESSAGE_LENGTH = 4 * 1024;
 const MAX_SUBAGENT_CONTROL_RECEIPT_CAS_ATTEMPTS = 64;
 const HITL_MESSAGE_FILTER_FIELD_SET = new Set<string>(HITL_MESSAGE_FILTER_FIELDS);
 
+function removeTingMetadata<T extends object>(value: T): void {
+  for (const key of Object.keys(value)) {
+    if (
+      key === 'tingIntake' ||
+      key.startsWith('tingIntake.') ||
+      key === 'tingOperation' ||
+      key.startsWith('tingOperation.')
+    ) {
+      delete value[key as keyof T];
+    }
+  }
+}
+
 function normalizeUserSubmittedPaths(paths: unknown): string[] {
   if (!Array.isArray(paths)) {
     return [];
@@ -275,12 +288,14 @@ function buildMessageSaveUpdate(
   options: {
     stampModelOutputOnInsert: boolean;
     unsetContextMeta: boolean;
+    unsetTingMetadata?: boolean;
     retentionOnInsert?: { expiredAt: Date; isTemporary: false };
   },
 ): UpdateQuery<IMessage> {
   if (
     !options.stampModelOutputOnInsert &&
     !options.unsetContextMeta &&
+    !options.unsetTingMetadata &&
     options.retentionOnInsert == null
   ) {
     return update;
@@ -293,7 +308,12 @@ function buildMessageSaveUpdate(
         ...options.retentionOnInsert,
       },
     }),
-    ...(options.unsetContextMeta && { $unset: { contextMeta: 1 } }),
+    ...((options.unsetContextMeta || options.unsetTingMetadata) && {
+      $unset: {
+        ...(options.unsetContextMeta && { contextMeta: 1 }),
+        ...(options.unsetTingMetadata && { tingIntake: 1, tingOperation: 1 }),
+      },
+    }),
   };
 }
 
@@ -307,6 +327,7 @@ async function findOneAndMergeMessageProvenance(
     upsert: boolean;
     stampModelOutputOnInsert?: boolean;
     unsetContextMeta?: boolean;
+    unsetTingMetadata?: boolean;
     retentionOnInsert?: { expiredAt: Date; isTemporary: false };
   },
 ) {
@@ -352,7 +373,12 @@ async function findOneAndMergeMessageProvenance(
           $set: { ...safeUpdate, ...provenance },
           ...(current == null &&
             options.retentionOnInsert != null && { $setOnInsert: options.retentionOnInsert }),
-          ...(options.unsetContextMeta && { $unset: { contextMeta: 1 } }),
+          ...((options.unsetContextMeta || options.unsetTingMetadata) && {
+            $unset: {
+              ...(options.unsetContextMeta && { contextMeta: 1 }),
+              ...(options.unsetTingMetadata && { tingIntake: 1, tingOperation: 1 }),
+            },
+          }),
         },
         { upsert: options.upsert && current == null, new: true },
       );
@@ -459,6 +485,9 @@ export const CLIENT_MESSAGE_SELECT: string = [
   '-summary',
   '-summaryTokenCount',
   '-contextMeta',
+  '-tingIntake.audit',
+  '-tingIntake.operation',
+  '-tingOperation',
   '-langfuseSampled',
   '-langfuseDestinationIds',
   '-langfuseRunId',
@@ -957,6 +986,10 @@ export function createMessageMethods(mongoose: typeof import('mongoose')): Messa
         params.isCreatedByUser === false && params.isUserSubmitted === undefined;
       const hasProvenance =
         userSubmittedPaths.length > 0 || userSubmittedMessageFieldPaths.length > 0;
+      const unsetTingMetadata = params.isUserSubmitted === true || hasProvenance;
+      if (unsetTingMetadata) {
+        removeTingMetadata(update);
+      }
       const message = hasProvenance
         ? await findOneAndMergeMessageProvenance(
             Message,
@@ -964,13 +997,20 @@ export function createMessageMethods(mongoose: typeof import('mongoose')): Messa
             update,
             userSubmittedPaths,
             userSubmittedMessageFieldPaths,
-            { upsert: true, stampModelOutputOnInsert, unsetContextMeta, retentionOnInsert },
+            {
+              upsert: true,
+              stampModelOutputOnInsert,
+              unsetContextMeta,
+              unsetTingMetadata,
+              retentionOnInsert,
+            },
           )
         : await Message.findOneAndUpdate(
             { messageId: params.messageId, user: userId },
             buildMessageSaveUpdate(update, {
               stampModelOutputOnInsert,
               unsetContextMeta,
+              unsetTingMetadata,
               retentionOnInsert,
             }),
             { upsert: true, new: true },
@@ -1059,6 +1099,7 @@ export function createMessageMethods(mongoose: typeof import('mongoose')): Messa
       const Message = mongoose.models.Message as Model<IMessage>;
       const bulkOps = messages.map((message) => {
         const normalizedMessage = { ...message };
+        removeTingMetadata(normalizedMessage);
         const provenance = capNormalizedProvenance(
           normalizeUserSubmittedPaths(message.userSubmittedPaths),
           normalizeUserSubmittedMessageFieldPaths(message.userSubmittedMessageFieldPaths),
@@ -1080,7 +1121,10 @@ export function createMessageMethods(mongoose: typeof import('mongoose')): Messa
         return {
           updateOne: {
             filter: { messageId: message.messageId },
-            update: normalizedMessage,
+            update: {
+              $set: normalizedMessage,
+              $unset: { tingIntake: 1, tingOperation: 1 },
+            },
             timestamps: !overrideTimestamp,
             upsert: true,
           },
@@ -1138,6 +1182,7 @@ export function createMessageMethods(mongoose: typeof import('mongoose')): Messa
         }),
         ...(provenance.promoteWholeMessage && { isUserSubmitted: true }),
       };
+      removeTingMetadata(message);
       const update =
         rest.isCreatedByUser === false &&
         rest.isUserSubmitted === undefined &&
@@ -1164,7 +1209,10 @@ export function createMessageMethods(mongoose: typeof import('mongoose')): Messa
   ) {
     try {
       const Message = mongoose.models.Message as Model<IMessage>;
-      await Message.updateOne({ messageId, user: userId }, { text });
+      await Message.updateOne(
+        { messageId, user: userId },
+        { $set: { text }, $unset: { tingIntake: 1, tingOperation: 1 } },
+      );
     } catch (err) {
       logger.error('Error updating message text:', err);
       throw err;
@@ -1904,6 +1952,10 @@ export function createMessageMethods(mongoose: typeof import('mongoose')): Messa
       );
       delete update.userSubmittedPaths;
       delete update.userSubmittedMessageFieldPaths;
+      removeTingMetadata(update);
+      const changesContent =
+        Object.prototype.hasOwnProperty.call(update, 'text') ||
+        Object.prototype.hasOwnProperty.call(update, 'content');
       const updatedMessage =
         submittedPaths.length > 0 || submittedMessageFields.length > 0
           ? await findOneAndMergeMessageProvenance(
@@ -1912,9 +1964,15 @@ export function createMessageMethods(mongoose: typeof import('mongoose')): Messa
               update,
               submittedPaths,
               submittedMessageFields,
-              { upsert: false },
+              { upsert: false, unsetTingMetadata: true },
             )
-          : await Message.findOneAndUpdate({ messageId, user: userId }, update, { new: true });
+          : await Message.findOneAndUpdate(
+              { messageId, user: userId },
+              changesContent
+                ? { $set: update, $unset: { tingIntake: 1, tingOperation: 1 } }
+                : update,
+              { new: true },
+            );
 
       if (!updatedMessage) {
         throw new Error('Message not found or user not authorized.');

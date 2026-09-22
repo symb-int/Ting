@@ -126,9 +126,11 @@ export default function useSSE(
         /** A queued delta flush reading the older streaming copy must never
          * land on top of the server-final write. */
         cancelPendingDeltaFlush();
-        clearComposerDrafts(runIndex, submission.conversation?.conversationId, {
-          includeNewChatDraft: startedAsNewConversation(submission),
-        });
+        if (submission.tingAction == null) {
+          clearComposerDrafts(runIndex, submission.conversation?.conversationId, {
+            includeNewChatDraft: startedAsNewConversation(submission),
+          });
+        }
         try {
           finalHandler(data, submission as EventSubmission);
           finalizeUsage(data, { ...submission, userMessage });

@@ -28,6 +28,7 @@ const AuthorHeader = memo(function AuthorHeader({
       <h2 className="min-w-0 select-none truncate font-bold text-text-primary">
         {localize('com_ting_name')}
       </h2>
+      <span className="ting-agent-scope">{localize('com_ting_private_with_you')}</span>
     </div>
   );
 });

@@ -302,6 +302,8 @@ jest.mock('@librechat/api', () => ({
   cleanupMCPRequestContextForReq: (...args) => mockCleanupMCPRequestContextForReq(...args),
   decrementPendingRequest: (...args) => mockDecrementPendingRequest(...args),
   sanitizeMessageForTransmit: jest.fn((message) => message),
+  tingUserMessage: jest.requireActual('@librechat/api').tingUserMessage,
+  isTingAdmittedAction: jest.requireActual('@librechat/api').isTingAdmittedAction,
   checkAndIncrementPendingRequest: (...args) => mockCheckAndIncrementPendingRequest(...args),
   getAgentStartupTelemetry: (...args) => mockGetAgentStartupTelemetry(...args),
   acceptAgentStartupTelemetry: (...args) => mockAcceptAgentStartupTelemetry(...args),
@@ -368,6 +370,8 @@ jest.mock('~/server/middleware', () => ({
 jest.mock('~/cache', () => ({
   logViolation: jest.fn(),
 }));
+
+jest.mock('~/server/services/Files/strategies', () => ({ getStrategyFunctions: jest.fn() }));
 
 jest.mock('~/models', () => ({
   saveMessage: (...args) => mockSaveMessage(...args),
@@ -4000,6 +4004,116 @@ describe('ResumableAgentController resume metadata', () => {
       );
     });
   });
+
+  it.each(['initialization', 'generation'])(
+    'preserves admitted TING action identities and receipts through native %s failure and retry',
+    async (phase) => {
+      const { createTingAdmission, tingUserMessage } = jest.requireActual('@librechat/api');
+      const { Constants } = require('librechat-data-provider');
+      const BaseClient = require('~/app/clients/BaseClient');
+      const procedure = {
+        procedureId: '0387ad46-4cd6-40b7-be5a-296ef0812cd1',
+        revisionId: '05be7e19-d104-49dd-9f3d-64c3dc52f17b',
+        version: 1,
+        title: 'Termin vereinbaren',
+        description: 'Termin bei einer angebotenen Stelle vereinbaren.',
+      };
+      const action = {
+        type: 'select_procedure',
+        procedureId: procedure.procedureId,
+        revisionId: procedure.revisionId,
+        requestId: '801b00c6-0c8a-42e5-b160-792093f3e18d',
+      };
+      const rows = new Map();
+      mockGetMessages.mockImplementation(async (filter) =>
+        [...rows.values()].filter((row) =>
+          Object.entries(filter).every(([key, value]) => row[key] === value),
+        ),
+      );
+      mockSaveMessage.mockImplementation(async (_context, message) => {
+        rows.set(message.messageId, message);
+        return message;
+      });
+      const admit = createTingAdmission({
+        getMessages: mockGetMessages,
+        listPublishedTingProcedures: async () => [procedure],
+      });
+      const request = () => ({
+        user: { id: 'user-123' },
+        config: { ting: {} },
+        body: {
+          text: 'Caller text is ignored',
+          conversationId: 'conversation-123',
+          parentMessageId: Constants.NO_PARENT,
+          tingAction: action,
+          endpointOption: { endpoint: 'openAI', spec: 'ting-chat' },
+        },
+      });
+      const req = request();
+      const admitted = jest.fn();
+      await admit(req, createResumableResponse(), admitted);
+      expect(admitted).toHaveBeenCalledWith();
+
+      // Execute the real BaseClient parser: a bare override UUID incorrectly means
+      // "already saved" and would silently discard the trusted user receipt.
+      const client = new BaseClient(null, {});
+      client.options = { req };
+      const [, userId] = client.processOverideIds();
+      expect(client.skipSaveUserMessage).toBe(false);
+      expect(userId).toBe(req.body.messageId);
+      const userMessage = tingUserMessage(
+        req,
+        client.createUserMessage({
+          messageId: userId,
+          conversationId: req.body.conversationId,
+          parentMessageId: Constants.NO_PARENT,
+          text: req.body.text,
+        }),
+      );
+      expect(userMessage.tingOperation.action).toEqual(action);
+
+      const initialize =
+        phase === 'initialization'
+          ? jest.fn().mockRejectedValue(new Error('Provider initialization unavailable'))
+          : jest.fn().mockResolvedValue({
+              client: {
+                options: {},
+                sender: 'TING',
+                sendMessage: jest.fn(async (_text, options) => {
+                  options.getReqData({
+                    userMessage,
+                    conversationId: req.body.conversationId,
+                    responseMessageId: req.body.responseMessageId,
+                    sender: 'TING',
+                  });
+                  throw new Error('Provider generation unavailable');
+                }),
+              },
+            });
+      await AgentController(req, createResumableResponse(), jest.fn(), initialize, null);
+      await nextTick();
+      expect(rows.size).toBe(2);
+      expect(rows.get(req.body.messageId)).toMatchObject({
+        text: procedure.title,
+        isCreatedByUser: true,
+        tingOperation: { action },
+      });
+      expect(rows.get(req.body.responseMessageId)).toMatchObject({
+        parentMessageId: req.body.messageId,
+        error: true,
+        isCreatedByUser: false,
+      });
+
+      const retry = request();
+      const retryAdmitted = jest.fn();
+      await admit(retry, createResumableResponse(), retryAdmitted);
+      expect(retryAdmitted).toHaveBeenCalledWith();
+      expect(retry.body.messageId).toBe(req.body.messageId);
+      expect(retry.body.responseMessageId).toBe(req.body.responseMessageId);
+      expect(retry.body.text).toBe(procedure.title);
+      expect(rows.size).toBe(2);
+    },
+  );
 
   it('finalizes the failed job before releasing the idempotency claim', async () => {
     mockGenerationJobManager.claimGeneration.mockResolvedValue(wonGenerationClaim());

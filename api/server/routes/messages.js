@@ -27,6 +27,7 @@ const {
   mergeUserSubmittedMessageFieldPaths,
   isContentFilterError,
   withoutTraceRefs,
+  sanitizeMessageForTransmit,
 } = require('@librechat/api');
 const subagentThreadTaskStore = require('~/server/services/Endpoints/agents/subagentThreadStore');
 const { findAllArtifacts, replaceArtifactContent } = require('~/server/services/Artifacts/update');
@@ -192,8 +193,7 @@ router.get('/', async (req, res) => {
         const convo = result.convoMap[message.conversationId];
         const dbMessage = dbMessageMap[message.messageId];
         /** Search hydrates every schema field; server-private state never leaves. */
-        const publicHit = { ...message };
-        delete publicHit.contextMeta;
+        const publicHit = sanitizeMessageForTransmit(message);
 
         activeMessages.push({
           ...publicHit,
@@ -235,9 +235,7 @@ router.get('/', async (req, res) => {
  * @returns {TMessage}
  */
 function toClientMessage(message) {
-  const clientMessage = { ...message };
-  delete clientMessage.contextMeta;
-  return clientMessage;
+  return sanitizeMessageForTransmit(message);
 }
 
 router.post('/branch', configMiddleware, async (req, res) => {

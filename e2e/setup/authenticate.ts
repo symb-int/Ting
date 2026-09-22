@@ -49,6 +49,7 @@ async function authenticate(config: FullConfig, user: User) {
   const browser = await chromium.launch({
     headless: config.projects[0].use.headless ?? true,
     ...(chromiumChannel ? { channel: chromiumChannel } : {}),
+    ...config.projects[0].use.launchOptions,
   });
   try {
     const page = await browser.newPage();

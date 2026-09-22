@@ -145,6 +145,7 @@ async function maybeStartMemoryMongo() {
     instance: {
       dbName,
       ip: '127.0.0.1',
+      args: ['--nounixsocket'],
     },
   });
   process.env.MONGO_URI = withDbName(mongoServer.getUri(), dbName);

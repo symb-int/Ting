@@ -10,6 +10,7 @@ import { createSkillSyncStatusModel } from './skillSyncStatus';
 import { createConversationTagModel } from './conversationTag';
 import { createCodeEnvironmentModel } from './codeEnvironment';
 import { createAgentCategoryModel } from './agentCategory';
+import { createTingProcedureModel } from './tingProcedure';
 import { createChatProjectModel } from './chatProject';
 import { createAgentApiKeyModel } from './agentApiKey';
 import { createTransactionModel } from './transaction';
@@ -50,6 +51,7 @@ import logger from '~/config/winston';
  */
 export function createModels(mongoose: typeof import('mongoose')): {
   User: ReturnType<typeof createUserModel>;
+  TingProcedure: ReturnType<typeof createTingProcedureModel>;
   Token: ReturnType<typeof createTokenModel>;
   Session: ReturnType<typeof createSessionModel>;
   Balance: ReturnType<typeof createBalanceModel>;
@@ -99,6 +101,7 @@ export function createModels(mongoose: typeof import('mongoose')): {
 } {
   const models = {
     User: createUserModel(mongoose),
+    TingProcedure: createTingProcedureModel(mongoose),
     Token: createTokenModel(mongoose),
     Session: createSessionModel(mongoose),
     Balance: createBalanceModel(mongoose),

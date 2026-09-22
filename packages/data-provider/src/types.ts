@@ -30,6 +30,7 @@ import type { TMinimalFeedback } from './feedback';
 import type { ContentTypes } from './types/runs';
 import type { ProviderId } from './providers';
 import type { Agent } from './types/agents';
+import type { TingAction } from './ting';
 
 export * from './schemas';
 export * from './types/subagents';
@@ -143,6 +144,7 @@ export type TEphemeralAgent = {
 
 export type TPayload = Partial<TMessage> &
   Partial<TEndpointOption> & {
+    tingAction?: TingAction;
     isContinued: boolean;
     isRegenerate?: boolean;
     /** Manual context compaction: summarize the branch up to `parentMessageId`
@@ -200,6 +202,7 @@ export type TEditedContent =
     };
 
 export type TSubmission = {
+  tingAction?: TingAction;
   userMessage: TMessage;
   isEdited?: boolean;
   isContinued?: boolean;

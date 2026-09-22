@@ -453,6 +453,46 @@ describe('useAutoSave — typing as a run finishes', () => {
     mockSetDraft.mockReset();
   });
 
+  it.each(['durable-chat', Constants.NEW_CONVO])(
+    'keeps an unsent draft when a TING action completes or aborts into %s',
+    (destination) => {
+      const textAreaRef = makeTextAreaRef();
+      const ownDraft = 'Mein eigener Entwurf';
+      const { rerender } = renderHook(
+        ({ isSubmitting, conversationId }) =>
+          useAutoSave({
+            isSubmitting,
+            conversationId,
+            preserveDraftDuringSubmission: true,
+            textAreaRef,
+            files: new Map(),
+            setFiles: jest.fn(),
+          }),
+        { initialProps: { isSubmitting: false, conversationId: String(Constants.NEW_CONVO) } },
+      );
+      act(() => {
+        type(textAreaRef, ownDraft);
+        rerender({ isSubmitting: true, conversationId: String(Constants.NEW_CONVO) });
+      });
+      expect(textAreaRef.current!.value).toBe(ownDraft);
+      expect(actualUtils.getDraft(Constants.PENDING_CONVO)).toBe('');
+      act(() => {
+        rerender({ isSubmitting: false, conversationId: String(destination) });
+      });
+      if (destination !== Constants.NEW_CONVO) {
+        expect(mockSetValue).toHaveBeenLastCalledWith('text', ownDraft);
+        expect(
+          actualUtils.getDraft(actualUtils.getConversationDraftId(0, String(destination))),
+        ).toBe(ownDraft);
+        expect(
+          actualUtils.getDraft(actualUtils.getConversationDraftId(0, Constants.NEW_CONVO)),
+        ).toBe('');
+      } else {
+        expect(textAreaRef.current!.value).toBe(ownDraft);
+      }
+    },
+  );
+
   /** The reported bug. The composer is keyed under PENDING while a run streams and under the
    * conversation once it ends, and the key change tore off whatever the 25ms debounce had not
    * written yet: the pending record still held the previous flush, run end migrated that record,
